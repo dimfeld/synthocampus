@@ -1,0 +1,1489 @@
+goal: Building the Personal Assistant Discord Bot.
+details: >
+  Okay, here's a detailed, step-by-step blueprint for building the Personal
+  Assistant Discord Bot.
+
+
+  ## Guiding Principles for Each Step:
+
+
+  *   **Small & Iterative:** Each step should be a manageable piece of work.
+
+  *   **Testable:** Each step should result in functionality that can be tested
+  (unit, integration, or manually).
+
+  *   **Builds Upon Previous:** Steps should logically follow and build upon
+  completed work.
+
+  *   **Clear Goal:** Each step has a defined objective.
+
+  *   **Key Implementation Details:** High-level guidance on how to achieve the
+  goal.
+
+  *   **Testing Focus:** What specific aspects to test after completing the
+  step.
+
+
+  ## Testing Plan (Reiteration from Spec, integrated into steps)
+
+
+  *   **Unit Tests:** Each module/function (date parsing, DB operations, LLM
+  interaction wrappers, recurrence calculation) should have unit tests. Mock
+  external dependencies.
+
+  *   **Integration Tests:** Test interactions between components (e.g., message
+  -> LLM -> DB -> response).
+
+  *   **Manual Testing Scenarios:** Cover all user stories and edge cases
+  described in the spec. This is ongoing throughout development.
+
+
+  ## Environment Variables (Reiteration)
+
+  Ensure all specified environment variables are used and documented.
+
+
+  ## Security Considerations (Reiteration)
+
+  *   API keys via env vars.
+
+  *   Parameterized SQL queries.
+
+  *   Input sanitization (though LLM interaction might reduce direct risks,
+  still good practice if LLM output is used in sensitive ways beyond DB).
+
+  *   Rate limiting for LLM (if Vercel AI SDK doesn't handle it, or if you hit
+  limits).
+
+
+  This detailed blueprint provides a structured path. Each step is designed to
+  be a concrete unit of work, leading to a functional and testable increment of
+  the personal assistant bot. Remember to commit frequently and write tests as
+  you go!
+tasks:
+  - title: "Step 1.1.1: Initialize Bun Project"
+    description: Create a new Bun project with TypeScript.
+    files:
+      - package.json
+      - src/index.ts
+      - tsconfig.json
+    include_imports: false
+    include_importers: false
+    steps:
+      - prompt: |
+          Run `bun init` (or equivalent for TypeScript project).
+        done: false
+      - prompt: |
+          Install necessary base dependencies: `typescript`, `@types/bun`.
+        done: false
+      - prompt: |
+          Configure `tsconfig.json`.
+        done: false
+      - prompt: >
+          Verify: Project compiles, basic "hello world" script runs with `bun
+          run`.
+        done: false
+  - title: "Step 1.1.2: Basic Discord Bot Connection"
+    description: Create a Discord bot application and have the Bun script connect to
+      Discord.
+    files:
+      - src/index.ts
+      - package.json
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Create a bot application on the Discord Developer Portal. Get bot
+          token.
+        done: false
+      - prompt: >
+          Install a Discord library compatible with Bun (e.g., `discord.js` v14+
+          or a more Bun-native library if available and stable. For now, assume
+          `discord.js`).
+        done: false
+      - prompt: >
+          Write a minimal script that logs in the bot using `DISCORD_BOT_TOKEN`
+          from an environment variable (`.env` file, loaded by Bun automatically
+          or with a package like `dotenv`).
+        done: false
+      - prompt: |
+          Bot should log "Bot is online!" to console.
+        done: false
+      - prompt: >
+          Verify: Bot appears as "online" in your Discord server. Console logs
+          successful connection.
+        done: false
+  - title: "Step 1.1.3: Environment Variable Setup"
+    description: Establish a pattern for managing environment variables.
+    files:
+      - .env.example
+      - .gitignore
+      - src/index.ts
+    include_imports: false
+    include_importers: false
+    steps:
+      - prompt: >
+          Create a `.env.example` file listing all required variables from the
+          spec (`DISCORD_BOT_TOKEN`, `GOOGLE_AI_API_KEY`, `DATABASE_PATH`,
+          `TIMEZONE`, `DAILY_SUMMARY_CHANNEL_ID`, `DAILY_SUMMARY_TIME`).
+        done: false
+      - prompt: |
+          Ensure `.env` is in `.gitignore`.
+        done: false
+      - prompt: |
+          Load `DISCORD_BOT_TOKEN` in the bot script.
+        done: false
+      - prompt: |
+          Verify: Bot connects using the token from `.env`.
+        done: false
+  - title: "Step 1.2.1: SQLite Integration & Schema Definition"
+    description: Integrate SQLite and create the initial database schema.
+    files:
+      - package.json
+      - src/db/migrate.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Install SQLite driver for Bun/Node.js (e.g., `bun:sqlite` or
+          `better-sqlite3`).
+        done: false
+      - prompt: >
+          Define the SQL for `events`, `facts`, `recurring_patterns`,
+          `event_history`, `fact_history` tables as per the spec.
+        done: false
+      - prompt: >
+          Write a script (e.g., `src/db/migrate.ts`) that connects to the
+          database (path from `DATABASE_PATH` env var) and executes the `CREATE
+          TABLE` statements. This script should be idempotent (e.g., use `CREATE
+          TABLE IF NOT EXISTS`).
+        done: false
+      - prompt: |
+          Verify: Run the migration script.
+        done: false
+      - prompt: |
+          Verify: `assistant.db` file is created.
+        done: false
+      - prompt: >
+          Verify: Inspect the database schema using a SQLite browser to confirm
+          tables and columns.
+        done: false
+  - title: "Step 1.2.2: Basic Database Helper Functions"
+    description: Create simple helper functions for database interactions (to be
+      expanded later).
+    files:
+      - src/db/index.ts
+      - src/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Create a module (e.g., `src/db/index.ts`) that exports a database
+          connection instance.
+        done: false
+      - prompt: >
+          Write a placeholder function like `pingDb()` that executes a simple
+          query (e.g., `SELECT 1`) to test connectivity.
+        done: false
+      - prompt: |
+          Verify: Call `pingDb()` from main bot script; ensure no errors.
+        done: false
+  - title: "Step 1.3.1: Vercel AI SDK and Gemini API Key Setup"
+    description: Integrate the Vercel AI SDK and configure it for Gemini.
+    files:
+      - package.json
+      - src/llm/index.ts
+      - .env.example
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: |
+          Install `@ai-sdk/google`.
+        done: false
+      - prompt: |
+          Add `GOOGLE_AI_API_KEY` to `.env`.
+        done: false
+      - prompt: >
+          Create a module (e.g., `src/llm/index.ts`) that initializes the
+          `google` client and exports the `model` instance (Gemini Flash 2.5) as
+          shown in the spec.
+        done: false
+      - prompt: >
+          Verify: Write a small test function in `src/llm/index.ts` that sends a
+          simple prompt ("say hello") to Gemini and logs the response. Run this
+          manually.
+        done: false
+  - title: "Step 2.1.1: Respond to All Messages in Designated Channel"
+    description: Bot listens to messages in a specific channel and acknowledges them.
+    files:
+      - src/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: |
+          Modify Discord bot code to listen for `messageCreate` events.
+        done: false
+      - prompt: >
+          Initially, respond only if the message is from a specific channel ID
+          (configurable, perhaps `DAILY_SUMMARY_CHANNEL_ID` for now, or a new
+          `BOT_COMMAND_CHANNEL_ID`).
+        done: false
+      - prompt: >
+          For any message in this channel, bot replies with "I received your
+          message: [user's message]".
+        done: false
+      - prompt: >
+          Verify: Send messages in the designated channel; bot replies as
+          expected. Messages in other channels are ignored.
+        done: false
+  - title: "Step 2.1.2: LLM-based Input Classification (Intent Detection)"
+    description: Use LLM to classify user input into high-level intents (new_event,
+      new_fact, query, update, delete, unknown).
+    files:
+      - src/llm/classification.ts
+      - src/index.ts
+      - src/llm/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Design a prompt for the LLM.
+
+          Role: "You are an intent classifier for a personal assistant bot."
+
+          Input: User's message.
+
+          Output: A JSON object like `{ "intent": "new_event" | "new_fact" |
+          "query" | "update" | "delete" | "greeting" | "unknown",
+          "confidence_score": 0.0-1.0 }`.
+
+          Examples:
+
+          "David's recital is June 1" -> `new_event`
+
+          "The wifi password is abc123" -> `new_fact`
+
+          "What's happening this weekend?" -> `query`
+
+          "Hello bot" -> `greeting`
+        done: false
+      - prompt: >
+          Create a function `classifyInput(userInput: string): Promise<{intent:
+          string}>` in `src/llm/classification.ts`.
+        done: false
+      - prompt: |
+          Modify bot's message handler:
+          1.  Receive message.
+          2.  Call `classifyInput()`.
+          3.  Reply with "I think this is a [intent_type] message."
+        done: false
+      - prompt: |
+          Verify: Send various types of messages.
+        done: false
+      - prompt: |
+          Verify: Bot's classification response.
+        done: false
+      - prompt: >
+          Verify: Unit test `classifyInput` with mock LLM responses for
+          different inputs.
+        done: false
+  - title: "Step 2.2.1: LLM-based Fact Extraction"
+    description: If intent is `new_fact`, use LLM to extract subject, person,
+      category, key, and value.
+    files:
+      - src/llm/fact_extraction.ts
+      - src/llm/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Design a prompt for fact extraction.
+
+          Role: "You are an information extractor for a personal assistant.
+          Extract structured data from the following fact."
+
+          Input: User's message.
+
+          Context: Current date (for any implicit context, though less relevant
+          for facts).
+
+          Output: A JSON object like `{ "subject": "wifi", "person": null,
+          "category": "password", "fact_key": "wifi password", "fact_value":
+          "abc123" }`.
+
+          Provide examples for various fact types (passwords, allergies,
+          preferences, etc.).
+
+          Instruct LLM to infer categories like 'health', 'preference',
+          'contact', 'password', 'general'.
+        done: false
+      - prompt: >
+          Create `extractFactDetails(userInput: string): Promise<FactData>` in
+          `src/llm/fact_extraction.ts`.
+        done: false
+      - prompt: >
+          Verify: Unit test `extractFactDetails` with various fact sentences.
+          Check if output JSON is correct.
+        done: false
+      - prompt: >
+          Verify: Manually send fact sentences to the bot and log the extracted
+          JSON.
+        done: false
+  - title: "Step 2.2.2: Storing Extracted Facts in Database"
+    description: Save the extracted fact details into the `facts` table.
+    files:
+      - src/db/facts.ts
+      - src/index.ts
+      - src/llm/fact_extraction.ts
+      - src/db/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Create `addFact(factData: FactData): Promise<number>` function in
+          `src/db/facts.ts`. This function will:
+
+          Insert a new record into the `facts` table (`original_text`,
+          `subject`, `person`, `category`, `fact_key`, `fact_value`).
+          `is_active` defaults to `TRUE`.
+
+          Return the ID of the newly inserted fact.
+        done: false
+      - prompt: >
+          In the main bot logic, if intent is `new_fact`:
+
+          1.  Call `extractFactDetails()`.
+
+          2.  Call `addFact()` with the result.
+
+          3.  Respond to user: "OK, I've noted that: [original_text]." (or a
+          more natural confirmation).
+        done: false
+      - prompt: |
+          Verify: Send a fact sentence (e.g., "The wifi password is abc123").
+        done: false
+      - prompt: |
+          Verify: Bot's confirmation message.
+        done: false
+      - prompt: >
+          Verify: Check the `facts` table in SQLite browser to ensure data is
+          stored correctly.
+        done: false
+      - prompt: >
+          Verify: Test with facts that include a person ("Sarah is allergic to
+          peanuts").
+        done: false
+  - title: "Step 2.2.3: Storing Fact History (Creation)"
+    description: Record the creation of a new fact in the `fact_history` table.
+    files:
+      - src/db/fact_history.ts
+      - src/db/facts.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          Create `addFactHistory(factId: number, changeType: string, oldValues:
+          any, newValues: any)` in `src/db/fact_history.ts`.
+        done: false
+      - prompt: >
+          Modify `addFact()`: after successfully inserting into `facts`, call
+          `addFactHistory()` with `changeType: 'created'`, `oldValues: null`,
+          and `newValues: { ...factData }` (JSON stringified).
+        done: false
+      - prompt: |
+          Verify: Add a new fact.
+        done: false
+      - prompt: >
+          Verify: An entry is created in `fact_history` table with correct
+          `fact_id`, `change_type`, and `new_values`.
+        done: false
+  - title: "Step 2.3.1: LLM-based Event Extraction"
+    description: If intent is `new_event`, use LLM to extract person, event type,
+      description, and date/time string.
+    files:
+      - src/llm/event_extraction.ts
+      - src/llm/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Design a prompt for event extraction.
+
+          Role: "You are an information extractor for a personal assistant.
+          Extract structured data from the following event description."
+
+          Input: User's message.
+
+          Context: Current date/time, default timezone (Hawaii).
+
+          Output: A JSON object like `{ "person": "David", "event_type":
+          "recital", "description": "David's recital", "date_time_str": "June 1"
+          }`.
+
+          Instruct LLM to identify event types like 'appointment', 'recital',
+          'practice', 'meeting', 'birthday'.
+        done: false
+      - prompt: >
+          Create `extractEventDetails(userInput: string, currentDate: Date):
+          Promise<EventDataFromLLM>` in `src/llm/event_extraction.ts`.
+        done: false
+      - prompt: |
+          Verify: Unit test `extractEventDetails` with various event sentences.
+        done: false
+      - prompt: >
+          Verify: Manually send event sentences to the bot and log the extracted
+          JSON.
+        done: false
+  - title: "Step 2.3.2: Basic Date/Time Parsing"
+    description: Convert the `date_time_str` from LLM into actual `DATE` and `TIME`
+      objects/strings.
+    files:
+      - package.json
+      - src/utils/date_time.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Use a robust date parsing library (e.g., `date-fns`, `dayjs`, or
+          `chrono-node` for natural language parsing if LLM output is too
+          vague). `chrono-node` is good for "next Tuesday at 3pm".
+        done: false
+      - prompt: >
+          Create a utility function `parseDateTime(dateTimeStr: string,
+          referenceDate: Date, timezone: string): { date: string, time: string |
+          null, assumption?: string }`.
+
+          This function should handle simple dates like "June 1", "tomorrow",
+          "next Tuesday at 3pm".
+
+          Default to Hawaii timezone (`Pacific/Honolulu` from env var).
+
+          If an assumption is made (e.g., "Saturday" -> "next Saturday"),
+          include it in the return.
+        done: false
+      - prompt: |
+          Verify: Unit test `parseDateTime` with various inputs:
+          "June 1" (assume current year)
+          "tomorrow at 5pm"
+          "next Monday"
+          "August 10, 2025 2:00 PM"
+          Test timezone handling (ensure output reflects Hawaii time).
+          Test assumption reporting.
+        done: false
+  - title: "Step 2.3.3: Storing Extracted Events in Database"
+    description: Save the parsed event details into the `events` table.
+    files:
+      - src/db/events.ts
+      - src/index.ts
+      - src/llm/event_extraction.ts
+      - src/utils/date_time.ts
+      - src/db/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Create `addEvent(eventData: ParsedEventData): Promise<number>`
+          function in `src/db/events.ts`.
+
+          `ParsedEventData` includes `original_text`, `person`, `event_type`,
+          `description`, `event_date` (YYYY-MM-DD), `event_time` (HH:MM:SS or
+          null).
+
+          `is_recurring` defaults to `FALSE`. `is_active` defaults to `TRUE`.
+        done: false
+      - prompt: >
+          In the main bot logic, if intent is `new_event`:
+
+          1.  Call `extractEventDetails()`.
+
+          2.  Call `parseDateTime()` on `date_time_str`.
+
+          3.  Call `addEvent()` with combined data.
+
+          4.  Respond to user: "OK, I've scheduled: [description] on [date] at
+          [time]. (Assumption: [assumption if any])".
+        done: false
+      - prompt: >
+          Verify: Send event sentences (e.g., "David's recital is June 1",
+          "Meeting tomorrow at 2pm").
+        done: false
+      - prompt: |
+          Verify: Bot's confirmation, including any date assumptions.
+        done: false
+      - prompt: |
+          Verify: Check the `events` table.
+        done: false
+  - title: "Step 2.3.4: Storing Event History (Creation)"
+    description: Record the creation of a new event in the `event_history` table.
+    files:
+      - src/db/event_history.ts
+      - src/db/events.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          Create `addEventHistory(eventId: number, changeType: string,
+          oldValues: any, newValues: any)` in `src/db/event_history.ts`.
+        done: false
+      - prompt: >
+          Modify `addEvent()`: after successfully inserting into `events`, call
+          `addEventHistory()` with `changeType: 'created'`, `oldValues: null`,
+          and `newValues: { ...eventData }`.
+        done: false
+      - prompt: |
+          Verify: Add a new event.
+        done: false
+      - prompt: |
+          Verify: An entry is created in `event_history` table.
+        done: false
+  - title: "Step 3.1.1: LLM-based Fact Query Analysis"
+    description: If intent is `query`, and it seems like a fact query, use LLM to
+      understand what's being asked.
+    files:
+      - src/llm/query_analysis.ts
+      - src/llm/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Design a prompt for fact query analysis.
+
+          Role: "You are a query analyzer for a personal assistant. Determine
+          the parameters for a database search based on the user's question
+          about facts."
+
+          Input: User's query.
+
+          Output: A JSON object like `{ "query_type": "fact", "person": "David"
+          | null, "category": "allergy" | null, "fact_key": "wifi password" |
+          null, "keywords": ["teacher"] | null }`.
+        done: false
+      - prompt: >
+          Create `analyzeFactQuery(userInput: string):
+          Promise<FactQueryParameters>` in `src/llm/query_analysis.ts`.
+        done: false
+      - prompt: >
+          Verify: Unit test `analyzeFactQuery` with various questions: "What do
+          I know about David?", "What are the passwords?", "What's the wifi
+          password?".
+        done: false
+      - prompt: |
+          Verify: Manually send queries and log the parsed parameters.
+        done: false
+  - title: "Step 3.1.2: Retrieving Facts from Database"
+    description: Fetch facts from the `facts` table based on LLM-parsed query parameters.
+    files:
+      - src/db/facts.ts
+      - src/db/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Create `findFacts(params: FactQueryParameters): Promise<Fact[]>` in
+          `src/db/facts.ts`.
+        done: false
+      - prompt: >
+          This function will build a SQL query dynamically based on `params`
+          (e.g., `WHERE person = ? AND category = ?`). Use `LIKE` for keyword
+          searches on `subject`, `fact_key`, `fact_value`. Only query `is_active
+          = TRUE` facts.
+        done: false
+      - prompt: >
+          Verify: Unit test `findFacts` by populating DB with test data and
+          querying with different params.
+        done: false
+      - prompt: |
+          Verify: Ensure SQL injection is prevented (use parameterized queries).
+        done: false
+  - title: "Step 3.1.3: Formatting and Responding with Fact Query Results"
+    description: Present the retrieved facts to the user in a clear format.
+    files:
+      - src/index.ts
+      - src/llm/classification.ts
+      - src/llm/query_analysis.ts
+      - src/db/facts.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          In main bot logic, if `classifyInput` returns `query` and
+          `analyzeFactQuery` returns fact parameters:
+
+          1.  Call `findFacts()`.
+
+          2.  Format results (e.g., "Here's what I know about
+          [subject/person]:\n - [Fact Key]: [Fact Value]").
+
+          3.  If no results, "I couldn't find anything matching that."
+
+          4.  Use Discord formatting (bold, lists).
+        done: false
+      - prompt: |
+          Verify: Add some facts, then query them in various ways.
+        done: false
+      - prompt: |
+          Verify: Formatting and accuracy of results.
+        done: false
+      - prompt: |
+          Verify: Test "no results" scenario.
+        done: false
+  - title: "Step 3.2.1: LLM-based Event Query Analysis (Time Focus)"
+    description: If intent is `query`, and it seems like an event query, use LLM to
+      extract timeframes.
+    files:
+      - src/llm/query_analysis.ts
+      - src/llm/index.ts
+      - src/utils/date_time.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Design/extend prompt for event query analysis.
+
+          Role: "...determine parameters for a database search based on the
+          user's question about events."
+
+          Input: User's query.
+
+          Context: Current date/time, timezone.
+
+          Output: JSON `{ "query_type": "event", "time_range": { "start":
+          "YYYY-MM-DD HH:MM:SS", "end": "YYYY-MM-DD HH:MM:SS" }, "person": null,
+          "event_type": null, "keywords": null }`.
+
+          LLM should interpret "this weekend", "June", "today", "next week".
+        done: false
+      - prompt: >
+          Create/extend `analyzeEventQuery(userInput: string, currentDate:
+          Date): Promise<EventQueryParameters>` in `src/llm/query_analysis.ts`.
+          This will involve LLM interpreting the time phrase and then your code
+          converting it to start/end dates using date library.
+        done: false
+      - prompt: >
+          Verify: Unit test `analyzeEventQuery` with questions: "What's
+          happening this weekend?", "Anything in June?", "What's on today?".
+        done: false
+      - prompt: >
+          Verify: Manually send queries and log parsed parameters, especially
+          `time_range`.
+        done: false
+  - title: "Step 3.2.2: Retrieving Non-Recurring Events from Database by Time"
+    description: Fetch non-recurring events from `events` table based on time range.
+    files:
+      - src/db/events.ts
+      - src/db/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Create `findEvents(params: EventQueryParameters): Promise<Event[]>` in
+          `src/db/events.ts`.
+        done: false
+      - prompt: >
+          Initially, query `events` where `is_recurring = FALSE`, `is_active =
+          TRUE`, and `event_date` is within `params.time_range.start` and
+          `params.time_range.end`.
+        done: false
+      - prompt: |
+          Sort chronologically.
+        done: false
+      - prompt: |
+          Verify: Add test events.
+        done: false
+      - prompt: |
+          Verify: Unit test `findEvents` with different time ranges.
+        done: false
+  - title: "Step 3.2.3: Formatting and Responding with Event Query Results"
+    description: Present retrieved events clearly.
+    files:
+      - src/index.ts
+      - src/llm/classification.ts
+      - src/llm/query_analysis.ts
+      - src/db/events.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          In main bot logic, for event queries:
+
+          1.  Call `findEvents()`.
+
+          2.  Format results: "Here's what's happening [timeframe]:\n - [Date]
+          at [Time]: [Description] (for [Person])".
+
+          3.  If no results, "I don't have anything scheduled for [timeframe]."
+        done: false
+      - prompt: |
+          Verify: Add events, query them using time-based questions.
+        done: false
+      - prompt: |
+          Verify: Formatting, accuracy, and chronological order.
+        done: false
+  - title: "Step 3.3.1: Enhance `parseDateTime` for Ambiguity and Assumptions"
+    description: Improve `parseDateTime` to robustly handle ambiguous dates and
+      clearly state assumptions.
+    files:
+      - src/utils/date_time.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: |
+          Refine `parseDateTime` (from Step 2.3.2).
+        done: false
+      - prompt: >
+          Example: "Saturday" -> assumes *next* Saturday. The function should
+          return this assumption string.
+        done: false
+      - prompt: >
+          Handle cases like "June" without a day (e.g., interpret as the whole
+          month for queries, or ask for clarification for new events). For now,
+          for new events, it might be too ambiguous, LLM should be prompted to
+          ask for clarification or make a guess like "June 1st".
+        done: false
+      - prompt: |
+          Ensure all date operations consistently use the configured `TIMEZONE`.
+        done: false
+      - prompt: >
+          Verify: Extensive unit tests for `parseDateTime` covering various
+          ambiguous inputs and relative dates ("next month", "in 3 days", "last
+          Friday").
+        done: false
+      - prompt: |
+          Verify: Assumption messages are generated correctly.
+        done: false
+  - title: "Step 3.3.2: Integrate Enhanced Parsing into Event Creation and Querying"
+    description: Use the improved `parseDateTime` in event creation and ensure
+      assumptions are communicated.
+    files:
+      - src/index.ts
+      - src/llm/query_analysis.ts
+      - src/utils/date_time.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          When creating events, if `parseDateTime` returns an assumption,
+          include it in the confirmation message to the user.
+        done: false
+      - prompt: >
+          For event queries, `analyzeEventQuery` should use `parseDateTime` (or
+          similar logic) to resolve time phrases like "next weekend" into
+          concrete date ranges, communicating any assumptions if the LLM itself
+          doesn't resolve it fully.
+        done: false
+      - prompt: >
+          Verify: Manually test creating events with ambiguous dates ("Party on
+          Saturday") and check bot's confirmation.
+        done: false
+      - prompt: >
+          Verify: Manually test querying events with relative date phrases
+          ("What's happening next week?").
+        done: false
+  - title: "Step 4.1.1: LLM-based Update Intent and Fact Identification"
+    description: Identify that user wants to update a fact and which fact they mean.
+    files:
+      - src/llm/update_analysis.ts
+      - src/llm/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          If `classifyInput` is `update`.
+
+          New prompt: "User wants to update a fact. Identify the fact to be
+          updated and the new information. The user's message is: [message].
+          Existing facts about [potential subject/person from message] are:
+          [list of relevant facts from DB, if identifiable, or rely on LLM to
+          match based on message content]."
+
+          Output: JSON `{ "type": "fact_update", "fact_identifier": { "subject":
+          "wifi", "fact_key": "wifi password" /* or existing fact_id if LLM can
+          be made to find it */ }, "new_values": { "fact_value": "xyz789" } }`.
+
+          For "Sarah is actually allergic to tree nuts, not peanuts", LLM should
+          identify the old value "peanuts" and new value "tree nuts" for the
+          "allergy" key for "Sarah".
+        done: false
+      - prompt: >
+          Create `analyzeFactUpdate(userInput: string, relevantFacts: Fact[]):
+          Promise<FactUpdateData>` in `src/llm/update_analysis.ts`.
+        done: false
+      - prompt: |
+          Verify: Unit test `analyzeFactUpdate` with various update statements.
+        done: false
+      - prompt: >
+          Verify: Test scenarios: direct update ("The wifi password is now
+          xyz789"), correction ("Sarah is allergic to tree nuts, not peanuts").
+        done: false
+  - title: "Step 4.1.2: Implementing Fact Update in Database"
+    description: Update the specified fact in the `facts` table.
+    files:
+      - src/db/facts.ts
+      - src/index.ts
+      - src/llm/update_analysis.ts
+      - src/db/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Create `updateFact(identifier: FactIdentifier, newValues:
+          Partial<FactData>): Promise<boolean>` in `src/db/facts.ts`.
+
+          First, find the fact to update using `identifier` (e.g., by `subject`
+          and `fact_key`, or by `id` if known). This might involve a preliminary
+          search.
+
+          If found, store its current state (for history).
+
+          Update the record in `facts` table. Update `updated_at`.
+
+          Return `true` if successful, `false` otherwise.
+        done: false
+      - prompt: >
+          In main bot logic:
+
+          1.  If intent is `update` (and it's a fact update):
+
+          2.  (Optional pre-fetch) Fetch potentially relevant facts based on
+          keywords in user message to provide context to LLM.
+
+          3.  Call `analyzeFactUpdate()`.
+
+          4.  Call `updateFact()`.
+
+          5.  Respond with confirmation: "OK, I've updated [fact_key] to
+          [new_value]."
+        done: false
+      - prompt: >
+          Verify: Add a fact. Update it. Verify change in DB and bot's
+          confirmation.
+        done: false
+      - prompt: |
+          Verify: Test partial updates and corrections.
+        done: false
+      - prompt: |
+          Verify: Test updating a non-existent fact (should fail gracefully).
+        done: false
+  - title: "Step 4.1.3: Storing Fact History (Updates)"
+    description: Record the update in `fact_history`.
+    files:
+      - src/db/facts.ts
+      - src/db/fact_history.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          Modify `updateFact()`: Before updating, fetch the current fact. After
+          successful update, call `addFactHistory()` with `changeType:
+          'updated'`, `oldValues: { ...oldFactData }`, and `newValues: {
+          ...updatedFactData }`.
+        done: false
+      - prompt: >
+          Verify: Update a fact. Verify `fact_history` table shows old and new
+          values.
+        done: false
+  - title: "Step 4.2.1: LLM-based Event Update Intent and Identification"
+    description: Identify user's intent to update an event and which event they mean.
+    files:
+      - src/llm/update_analysis.ts
+      - src/llm/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Prompt Engineering (Similar to Fact Update):
+
+          Input: User message, e.g., "Actually, David's recital is June 2nd not
+          June 1st", "David's recital is at 3pm".
+
+          Context: List of potentially relevant upcoming events for "David" or
+          matching "recital".
+
+          Output: JSON `{ "type": "event_update", "event_identifier": { /*
+          criteria to find event, e.g., description, old date */
+          "description_keywords": ["David", "recital"], "original_date_approx":
+          "June 1st" /* or existing event_id */ }, "new_values": { "event_date":
+          "YYYY-MM-DD", "event_time": "HH:MM:SS" /* only fields to change */ }
+          }`.
+        done: false
+      - prompt: >
+          Create `analyzeEventUpdate(userInput: string, relevantEvents:
+          Event[]): Promise<EventUpdateData>` in `src/llm/update_analysis.ts`.
+        done: false
+      - prompt: >
+          Verify: Unit test `analyzeEventUpdate` with various event update
+          statements.
+        done: false
+      - prompt: |
+          Verify: Test partial updates (only time, only date).
+        done: false
+  - title: "Step 4.2.2: Implementing Event Update in Database"
+    description: Update the specified event in the `events` table.
+    files:
+      - src/db/events.ts
+      - src/index.ts
+      - src/llm/update_analysis.ts
+      - src/utils/date_time.ts
+      - src/db/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Create `updateEvent(identifier: EventIdentifier, newValues:
+          Partial<ParsedEventData>): Promise<boolean>` in `src/db/events.ts`.
+
+          Find the event. This is tricky. May need to search by description
+          keywords and old date/time if `id` is not provided by LLM. For future
+          events, assume new info overwrites.
+
+          If `newValues` contains date/time strings, parse them using
+          `parseDateTime()`.
+
+          Store old values for history.
+
+          Update record in `events`. Update `updated_at`.
+        done: false
+      - prompt: >
+          In main bot logic for event updates:
+
+          1.  Call `analyzeEventUpdate()`.
+
+          2.  Call `updateEvent()`.
+
+          3.  Respond: "OK, David's recital is now on June 2nd at 3pm. (Old:
+          June 1st)".
+        done: false
+      - prompt: >
+          Verify: Add an event. Update its date, then its time. Verify changes
+          and confirmation.
+        done: false
+      - prompt: >
+          Verify: Test conflict handling (spec says "For future events,
+          automatically update with new information").
+        done: false
+  - title: "Step 4.2.3: Storing Event History (Updates)"
+    description: Record the update in `event_history`.
+    files:
+      - src/db/events.ts
+      - src/db/event_history.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          Modify `updateEvent()`: Before updating, fetch current event. After
+          update, call `addEventHistory()` with `changeType: 'updated'`,
+          `oldValues`, and `newValues`.
+        done: false
+      - prompt: |
+          Verify: Update an event. Verify `event_history`.
+        done: false
+  - title: "Step 4.3.1: LLM-based Deletion Intent and Identification"
+    description: Identify user's intent to delete a fact/event and what to delete.
+    files:
+      - src/llm/delete_analysis.ts
+      - src/llm/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Prompt Engineering (Extend Classification/New Prompt):
+
+          If `classifyInput` is `delete`.
+
+          Prompt: "User wants to delete information. Identify if it's a fact or
+          event, and what specific item to delete. User message: [message].
+          Relevant items: [context if possible]."
+
+          Output: JSON `{ "type": "delete", "item_type": "fact" | "event",
+          "identifier": { /* criteria */ } }`.
+        done: false
+      - prompt: >
+          Create `analyzeDeletion(userInput: string, contextItems: any[]):
+          Promise<DeletionData>` in `src/llm/delete_analysis.ts`.
+        done: false
+      - prompt: >
+          Verify: Test with "Forget about the old wifi password", "Sarah is no
+          longer allergic to peanuts", "Cancel David's recital on June 2nd".
+        done: false
+  - title: "Step 4.3.2: Implementing Soft Deletes for Facts and Events"
+    description: Mark facts/events as inactive instead of physically deleting them.
+    files:
+      - src/db/facts.ts
+      - src/db/events.ts
+      - src/index.ts
+      - src/llm/delete_analysis.ts
+      - src/db/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Create `deleteFact(identifier: FactIdentifier): Promise<boolean>` in
+          `src/db/facts.ts`. Sets `is_active = FALSE`, updates `updated_at`.
+        done: false
+      - prompt: >
+          Create `deleteEvent(identifier: EventIdentifier): Promise<boolean>` in
+          `src/db/events.ts`. Sets `is_active = FALSE`, updates `updated_at`.
+        done: false
+      - prompt: |
+          In main bot logic:
+          1.  Call `analyzeDeletion()`.
+          2.  Call appropriate delete function.
+          3.  Respond: "OK, I've removed the information about [deleted item]."
+        done: false
+      - prompt: |
+          Verify: Add a fact/event. Delete it. Verify `is_active` is false.
+        done: false
+      - prompt: |
+          Verify: Deleted items don't show in queries.
+        done: false
+      - prompt: |
+          Verify: Bot confirmation.
+        done: false
+  - title: "Step 4.3.3: Storing History for Deletes"
+    description: Record deletions in history tables.
+    files:
+      - src/db/facts.ts
+      - src/db/events.ts
+      - src/db/fact_history.ts
+      - src/db/event_history.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          Modify `deleteFact()` and `deleteEvent()`: Before setting `is_active =
+          FALSE`, fetch the item. After update, call respective history function
+          with `changeType: 'deleted'`, `oldValues: { ...itemData }`,
+          `newValues: { is_active: false }`.
+        done: false
+      - prompt: |
+          Verify: Delete an item. Verify history table entry.
+        done: false
+  - title: "Step 4.4.1: LLM-based Recurrence Pattern Extraction"
+    description: Extract recurrence rule details from user input.
+    files:
+      - src/llm/event_extraction.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          When LLM identifies an event, prompt it to also look for recurrence.
+
+          Output for event: `{ ..., "is_recurring": true,
+          "recurrence_rule_text": "every Tuesday at 4pm",
+          "recurrence_end_date_text": "end of year" | null }`.
+
+          LLM should identify patterns: weekly, monthly, yearly, custom
+          intervals.
+        done: false
+      - prompt: |
+          Update `extractEventDetails` in `src/llm/event_extraction.ts`.
+        done: false
+      - prompt: >
+          Verify: Test with "Soccer practice is every Tuesday at 4pm", "Meeting
+          on the first Monday of each month", "Birthday on July 10th every
+          year".
+        done: false
+  - title: "Step 4.4.2: Parsing Recurrence Rules and Storing"
+    description: Convert LLM's `recurrence_rule_text` into a structured format
+      (e.g., RRule string or JSON) and store it. Calculate first
+      `next_occurrence`.
+    files:
+      - package.json
+      - src/utils/date_time.ts
+      - src/db/events.ts
+      - src/db/recurring.ts
+      - src/db/index.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          Create a function `parseRecurrenceRule(ruleText: string,
+          eventStartDate: Date, timezone: string): { rule: string, endDate?:
+          Date }`.
+
+          This is complex. May need a dedicated NLP library for recurrence or
+          more detailed LLM prompting to output a structured rule directly
+          (e.g., iCalendar RRule).
+
+          For "every Tuesday at 4pm", rule could be `FREQ=WEEKLY;BYDAY=TU`.
+
+          For "first Monday of each month", rule
+          `FREQ=MONTHLY;BYDAY=MO;BYSETPOS=1`.
+
+          Support: weekly, monthly (day of month, day of week), yearly, custom
+          (every X days).
+        done: false
+      - prompt: >
+          When adding/updating an event in `src/db/events.ts`:
+
+          If `is_recurring` is true:
+
+          Parse `recurrence_rule_text` into `events.recurrence_pattern`
+          (structured string/JSON).
+
+          Parse `recurrence_end_date_text` into `events.recurrence_end_date`.
+
+          Calculate the first occurrence date/time. This becomes
+          `events.event_date` and `events.event_time`.
+
+          Calculate the *next* occurrence after this first one (or the first one
+          itself if `event_date` is in the future) and store it in
+          `recurring_patterns` table.
+        done: false
+      - prompt: >
+          `recurring_patterns` table: `id, event_id, pattern_type (e.g.
+          'rrule'), pattern_value (the RRule string), next_occurrence DATE`.
+        done: false
+      - prompt: >
+          Create `addRecurringPattern(eventId: number, patternType: string,
+          patternValue: string, nextOccurrence: Date)` in `src/db/recurring.ts`.
+        done: false
+      - prompt: |
+          Verify: Unit test `parseRecurrenceRule` extensively.
+        done: false
+      - prompt: >
+          Verify: Add various recurring events. Check `events` and
+          `recurring_patterns` tables.
+        done: false
+      - prompt: |
+          Verify: `next_occurrence` is calculated correctly.
+        done: false
+  - title: "Step 4.4.3: Querying Recurring Events"
+    description: Include recurring events in time-based queries.
+    files:
+      - src/db/events.ts
+      - src/db/recurring.ts
+      - src/db/index.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          Modify `findEvents(params: EventQueryParameters)`:
+
+          Also query `recurring_patterns` table where `next_occurrence` falls
+          within `params.time_range.start` and `params.time_range.end`.
+
+          Join with `events` table to get full event details for these
+          occurrences.
+
+          Combine with non-recurring events and sort chronologically.
+
+          (Important: This only gets the *next* occurrence. For a range like
+          "all events in June", you'd need to expand recurrence rules. This is
+          advanced. For now, focus on `next_occurrence` matching.)
+
+          Refinement for range queries: For a query like "What's in June?",
+          iterate from `time_range.start` to `time_range.end`. For each day,
+          check `recurring_patterns.next_occurrence`. If it matches, include it.
+          Then, for that specific recurring event, calculate its *new*
+          `next_occurrence` and *temporarily* hold it for the duration of the
+          query, so it can appear multiple times in June if it's weekly. This is
+          complex.
+
+          Simpler initial approach for range queries: The
+          `recurring_patterns.next_occurrence` is the single next time. If a
+          query asks "what's in June?", and a weekly event's `next_occurrence`
+          is in June, it will be listed once. To list all instances in June,
+          you'd need a function `getOccurrencesInDateRange(eventId, startDate,
+          endDate)` that uses the RRule.
+        done: false
+      - prompt: >
+          Verify: Add recurring events. Query for "today", "this week". Verify
+          they appear if their `next_occurrence` matches.
+        done: false
+      - prompt: >
+          Verify: Test range queries (e.g., "next 7 days") and see how recurring
+          events are handled.
+        done: false
+  - title: "Step 4.4.4: Updating `next_occurrence` (Basic)"
+    description: After a recurring event's `next_occurrence` has passed (e.g.,
+      during daily summary or when queried), update it.
+    files:
+      - src/db/recurring.ts
+      - src/utils/date_time.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Create `updateNextOccurrence(recurringPatternId: number,
+          newNextOccurrence: Date)` in `src/db/recurring.ts`.
+        done: false
+      - prompt: >
+          Create a utility `calculateNextOccurrence(rruleString: string,
+          lastOccurrence: Date, recurrenceEndDate?: Date): Date | null`. This
+          will use an RRule library (e.g., `rrule.js`).
+        done: false
+      - prompt: |
+          This will be primarily used by the Daily Summary task.
+        done: false
+      - prompt: >
+          Verify: Manually call function to update `next_occurrence` for a test
+          event. Verify DB.
+        done: false
+      - prompt: |
+          Verify: Unit test `calculateNextOccurrence`.
+        done: false
+  - title: "Step 5.1.1: Implement Daily Summary Job Scheduler"
+    description: Schedule a job to run daily at 7:00 AM Hawaii time.
+    files:
+      - package.json
+      - src/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Use a scheduling library (e.g., `node-cron` or a Bun-native
+          equivalent).
+        done: false
+      - prompt: >
+          Configure it to run based on `DAILY_SUMMARY_TIME` and `TIMEZONE` from
+          env vars.
+        done: false
+      - prompt: >
+          Verify: Set schedule to run every minute for testing. Verify it
+          triggers.
+        done: false
+      - prompt: |
+          Verify: Test timezone handling for the schedule.
+        done: false
+  - title: "Step 5.1.2: Logic for Generating Daily Summary Content"
+    description: Fetch all events (non-recurring and next occurrences of recurring)
+      for the current day.
+    files:
+      - src/db/events.ts
+      - src/db/recurring.ts
+      - src/db/index.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          Function `getEventsForDay(date: Date, timezone: string):
+          Promise<Event[]>`.
+
+          Query `events` where `event_date` is `date` AND `is_recurring = FALSE`
+          AND `is_active = TRUE`.
+
+          Query `recurring_patterns` joined with `events` where
+          `recurring_patterns.next_occurrence` is `date` AND `events.is_active =
+          TRUE`.
+
+          Combine and sort chronologically by time.
+        done: false
+      - prompt: >
+          Verify: Populate DB with events for "today". Call `getEventsForDay(new
+          Date(), 'Pacific/Honolulu')`. Verify results.
+        done: false
+  - title: "Step 5.1.3: Posting Daily Summary to Discord"
+    description: Format and send the summary to `DAILY_SUMMARY_CHANNEL_ID`.
+    files:
+      - src/index.ts
+      - src/db/events.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          In the scheduled job:
+
+          1.  Call `getEventsForDay()`.
+
+          2.  Format the list (chronological, clear).
+
+          3.  Send to `DAILY_SUMMARY_CHANNEL_ID`. If no events, send "No events
+          scheduled for today."
+        done: false
+      - prompt: >
+          Verify: Trigger summary manually (or wait for test schedule). Verify
+          message in Discord.
+        done: false
+      - prompt: |
+          Verify: Test with events and with no events.
+        done: false
+  - title: "Step 5.1.4: Update `next_occurrence` for Processed Recurring Events"
+    description: After including a recurring event in the summary, update its
+      `next_occurrence` in `recurring_patterns`.
+    files:
+      - src/index.ts
+      - src/db/recurring.ts
+      - src/utils/date_time.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: >
+          In the daily summary job, after fetching events:
+
+          For each recurring event included in the summary:
+
+          1.  Get its `event_id` and current `next_occurrence` (which is today).
+
+          2.  Use `calculateNextOccurrence()` (from 4.4.4) with its
+          `events.recurrence_pattern`, today's date as `lastOccurrence`, and
+          `events.recurrence_end_date`.
+
+          3.  If a new `next_occurrence` exists, call `updateNextOccurrence()`
+          for its entry in `recurring_patterns`.
+
+          4.  If no new `next_occurrence` (e.g., recurrence ended), mark the
+          `recurring_patterns` entry as inactive or delete it, or mark the
+          parent `event` as inactive if the recurrence was its only purpose. For
+          now, just stop updating if `calculateNextOccurrence` returns null.
+        done: false
+      - prompt: >
+          Verify: Run daily summary. Check that `next_occurrence` for relevant
+          recurring events in `recurring_patterns` table is advanced to their
+          next actual date.
+        done: false
+      - prompt: |
+          Verify: Test with recurring events that should end.
+        done: false
+  - title: "Step 5.2.1: Person-based and Category-based Queries"
+    description: Enhance query capabilities for "What's coming up for Sarah?", "What
+      allergies do we have?".
+    files:
+      - src/llm/query_analysis.ts
+      - src/db/facts.ts
+      - src/db/events.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          Extend `analyzeFactQuery` and `analyzeEventQuery` (or a combined query
+          analyzer) to reliably extract `person` and `category` filters.
+        done: false
+      - prompt: |
+          Update `findFacts` and `findEvents` to use these parameters.
+        done: false
+      - prompt: >
+          For "What do I know about David?", query both facts (`person='David'`)
+          and events (`person='David'`).
+        done: false
+      - prompt: >
+          Verify: Add data. Test queries like "What's up with Sarah next week?",
+          "Any health facts for Mom?".
+        done: false
+  - title: "Step 5.2.2: Combined Queries and Keyword Search"
+    description: Support "Anything about dentist?", "Everything about Sarah".
+    files:
+      - src/llm/query_analysis.ts
+      - src/db/facts.ts
+      - src/db/events.ts
+      - src/index.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          LLM query analysis should identify if a keyword search is needed
+          across descriptions, subjects, values, etc.
+        done: false
+      - prompt: >
+          `findFacts` and `findEvents` should support `LIKE %keyword%` searches
+          on relevant text fields.
+        done: false
+      - prompt: >
+          For "Everything about Sarah", query facts and events for Sarah, sort
+          events chronologically, facts by relevance (or just list them).
+        done: false
+      - prompt: |
+          Verify: Test broad keyword searches and combined queries.
+        done: false
+  - title: "Step 5.2.3: Comprehensive Error Handling"
+    description: Implement robust error handling across the application.
+    files:
+      - src/index.ts
+      - src/db/index.ts
+      - src/llm/index.ts
+      - src/llm/classification.ts
+      - src/llm/fact_extraction.ts
+      - src/llm/event_extraction.ts
+      - src/llm/query_analysis.ts
+      - src/llm/update_analysis.ts
+      - src/llm/delete_analysis.ts
+      - src/db/facts.ts
+      - src/db/events.ts
+      - src/db/recurring.ts
+      - src/utils/date_time.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          Input Validation: Gracefully handle malformed dates (ask for
+          clarification), missing info (prompt user).
+        done: false
+      - prompt: >
+          Database Errors: Use transactions for multi-step DB operations. Log
+          errors. User-friendly messages.
+        done: false
+      - prompt: >
+          LLM Errors: Retry logic (exponential backoff) for API calls. Log
+          errors. Fallback if LLM is down (e.g., "Sorry, I'm having trouble
+          understanding right now.").
+        done: false
+      - prompt: >
+          Discord Connection: Ensure reconnection logic is sound. Log API errors.
+        done: false
+      - prompt: |
+          Verify: Simulate LLM API errors, DB errors.
+        done: false
+      - prompt: |
+          Verify: Send invalid inputs.
+        done: false
+      - prompt: |
+          Verify: Test bot's behavior during Discord disconnects/reconnects.
+        done: false
+  - title: "Step 5.2.4: Logging and Monitoring"
+    description: Implement basic logging for diagnostics.
+    files:
+      - package.json
+      - src/index.ts
+      - src/db/index.ts
+      - src/llm/index.ts
+      - src/llm/classification.ts
+      - src/llm/fact_extraction.ts
+      - src/llm/event_extraction.ts
+      - src/llm/query_analysis.ts
+      - src/llm/update_analysis.ts
+      - src/llm/delete_analysis.ts
+      - src/db/facts.ts
+      - src/db/events.ts
+      - src/db/recurring.ts
+      - src/utils/date_time.ts
+    include_imports: true
+    include_importers: true
+    steps:
+      - prompt: >
+          Use a simple logger (e.g., `console.log` structured, or a library like
+          `pino`).
+        done: false
+      - prompt: >
+          Log key events: bot startup, DB connection, LLM requests/responses
+          (summary), errors, daily summary execution.
+        done: false
+      - prompt: |
+          Verify: Review logs during normal operation and error conditions.
+        done: false
+  - title: "Step 5.2.5: LLM Prompt Refinement and Optimization"
+    description: Iteratively improve prompts for accuracy and efficiency.
+    files:
+      - src/llm/classification.ts
+      - src/llm/fact_extraction.ts
+      - src/llm/event_extraction.ts
+      - src/llm/query_analysis.ts
+      - src/llm/update_analysis.ts
+      - src/llm/delete_analysis.ts
+    include_imports: true
+    include_importers: false
+    steps:
+      - prompt: |
+          Based on testing and observed behavior, refine all LLM prompts.
+        done: false
+      - prompt: >
+          Ensure prompts clearly define roles, expected output formats (JSON),
+          and include good few-shot examples.
+        done: false
+      - prompt: >
+          Add current date/time and timezone to prompts where relevant for date
+          calculations.
+        done: false
+      - prompt: >
+          Verify: Continuously evaluate LLM performance on all features. Test
+          edge cases.
+        done: false
