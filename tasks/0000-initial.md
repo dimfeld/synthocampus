@@ -568,14 +568,6 @@ This phase enables users to retrieve stored information.
         *   Log key events: bot startup, DB connection, LLM requests/responses (summary), errors, daily summary execution.
     *   **Testing:** Review logs during normal operation and error conditions.
 
-*   **Step 5.2.5: LLM Prompt Refinement and Optimization**
-    *   **Goal:** Iteratively improve prompts for accuracy and efficiency.
-    *   **Implementation:**
-        *   Based on testing and observed behavior, refine all LLM prompts.
-        *   Ensure prompts clearly define roles, expected output formats (JSON), and include good few-shot examples.
-        *   Add current date/time and timezone to prompts where relevant for date calculations.
-    *   **Testing:** Continuously evaluate LLM performance on all features. Test edge cases.
-
 ## Testing Plan (Reiteration from Spec, integrated into steps)
 
 *   **Unit Tests:** Each module/function (date parsing, DB operations, LLM interaction wrappers, recurrence calculation) should have unit tests. Mock external dependencies.

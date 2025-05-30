@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
+title: Storing Information (Facts and Simple Events)
+goal: Enable the bot to understand user messages for storing new facts and
+  simple, non-recurring events, including basic date/time parsing and history
+  tracking.
+details: This phase focuses on the bot's ability to receive, interpret, and
+  persist information. It involves implementing LLM-based intent classification
+  to understand user commands, and LLM-based data extraction to pull structured
+  data from natural language for storage.
+tasks:
+  - title: Implement Basic Message Handling and Intent Classification
+    description: Configure the bot to listen to messages in a designated Discord
+      channel. Implement a system using the LLM to classify user input into
+      high-level intents such as `new_fact`, `new_event`, `query`, etc., and
+      have the bot acknowledge or respond based on the classified intent.
+    files: []
+    steps: []
+  - title: Develop Fact Storage Functionality
+    description: Implement LLM-based extraction of structured data (subject, person,
+      category, key, value) for general facts from user messages. Create
+      database functions to store these extracted facts into the `facts` table
+      and record the creation event in the `fact_history` table. The bot should
+      confirm successful storage to the user.
+    files: []
+    steps: []
+  - title: Develop Simple Event Storage Functionality
+    description: Implement LLM-based extraction of event details (person, event
+      type, description, date/time string) for non-recurring events. Develop a
+      utility for basic date/time parsing from the extracted string, considering
+      the configured timezone. Create database functions to store these parsed
+      events into the `events` table and record their creation in
+      `event_history`. The bot should confirm scheduling, including any date
+      assumptions.
+    files: []
+    steps: []
+id: 1hyl1i5-2
+status: pending
+priority: unknown
+dependencies:
+  - 1hyl1i5-1
+rmfilter:
+  - .
+planGeneratedAt: 2025-05-30T03:19:49.289Z
+createdAt: 2025-05-30T03:19:49.289Z
+updatedAt: 2025-05-30T03:19:49.289Z

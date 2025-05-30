@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
+title: Retrieving Information (Basic Queries and Enhanced Date Handling)
+goal: Enable users to query stored facts and events using natural language, and
+  enhance the system's date/time parsing capabilities for accuracy and clarity.
+details: This phase focuses on making stored information accessible to the user
+  through natural language queries. It involves using the LLM to analyze query
+  intent and parameters, fetching data from the database, and formatting it for
+  presentation. Date/time handling will be made more robust.
+tasks:
+  - title: Implement Fact Querying System
+    description: Develop functionality for the LLM to analyze fact-based user
+      queries, extracting search parameters (e.g., person, category, keywords).
+      Implement database functions to retrieve matching active facts based on
+      these parameters. The bot will then format and present the results clearly
+      to the user.
+    files: []
+    steps: []
+  - title: Implement Basic Event Querying System (Time-based)
+    description: Develop functionality for the LLM to analyze event-based user
+      queries, with an initial focus on extracting timeframes (e.g., "today",
+      "this weekend"). Implement database functions to retrieve active,
+      non-recurring events within the specified time range. Results should be
+      sorted chronologically and presented clearly.
+    files: []
+    steps: []
+  - title: Enhance Date/Time Parsing and Assumption Handling
+    description: Improve the date/time parsing utility (created in Phase 2) to
+      robustly handle ambiguous inputs (e.g., "next Saturday") and relative
+      dates, consistently using the configured timezone. The system should
+      clearly communicate any assumptions made (e.g., "assuming next Saturday,
+      [date]") during event creation or query processing.
+    files: []
+    steps: []
+id: 1hyl1i5-3
+status: pending
+priority: unknown
+dependencies:
+  - 1hyl1i5-2
+rmfilter:
+  - .
+planGeneratedAt: 2025-05-30T03:19:49.289Z
+createdAt: 2025-05-30T03:19:49.289Z
+updatedAt: 2025-05-30T03:19:49.289Z

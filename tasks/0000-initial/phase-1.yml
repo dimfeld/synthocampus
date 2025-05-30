@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
+title: Core Infrastructure and Basic Connectivity
+goal: Establish the foundational elements of the project, including project
+  setup, basic Discord bot functionality, database integration, and LLM
+  connectivity.
+details: This phase ensures all core systems are in place and communicating,
+  forming the backbone for subsequent feature development. It covers setting up
+  the development environment, connecting to Discord, initializing the database
+  with its schema, and establishing a connection to the LLM service.
+tasks:
+  - title: Initialize Project and Basic Discord Bot
+    description: Set up the Bun/TypeScript project, configure necessary tooling
+      (linters, TypeScript), create a Discord bot application, and establish a
+      basic connection where the bot comes online in a server. This includes
+      implementing a robust system for managing environment variables (e.g., bot
+      token, API keys).
+    files: []
+    steps: []
+  - title: Database Setup and Initial Schema
+    description: Integrate SQLite into the project using a suitable driver for
+      Bun/Node.js. Define the complete database schema as per the project
+      specifications, including tables for `events`, `facts`,
+      `recurring_patterns`, `event_history`, and `fact_history`. Create an
+      idempotent migration script to initialize the database and its tables.
+    files: []
+    steps: []
+  - title: LLM Integration Setup
+    description: Integrate the Vercel AI SDK with Google Gemini (or the specified
+      LLM). Configure API key access securely using environment variables.
+      Create a basic module or service that initializes the LLM client and
+      provides a simple function to test sending a prompt and receiving a
+      response from the LLM.
+    files: []
+    steps: []
+id: 1hyl1i5-1
+status: pending
+priority: unknown
+dependencies: []
+rmfilter:
+  - .
+planGeneratedAt: 2025-05-30T03:19:49.289Z
+createdAt: 2025-05-30T03:19:49.289Z
+updatedAt: 2025-05-30T03:19:49.289Z

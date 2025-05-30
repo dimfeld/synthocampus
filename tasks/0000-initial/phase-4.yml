@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
+title: Modifying Information and Handling Recurring Events
+goal: Implement capabilities for users to update and delete stored facts and
+  events (using soft deletes), and introduce support for creating, storing, and
+  querying basic recurring events.
+details: This phase adds essential data management features (updates, soft
+  deletes with history) and extends event handling to include recurring
+  patterns. This involves more complex LLM interactions for understanding
+  update/delete intents and recurrence rules.
+tasks:
+  - title: Implement Update Operations for Facts and Events
+    description: Develop LLM-based intent analysis to understand user requests to
+      update existing facts or events. This includes identifying the specific
+      record to modify and the new information. Implement database logic to
+      update records in `facts` or `events` tables, ensuring `updated_at`
+      timestamps are set and changes are logged in the respective history
+      tables.
+    files: []
+    steps: []
+  - title: Implement Delete Operations (Soft Deletes) for Facts and Events
+    description: Develop LLM-based intent analysis for deletion requests,
+      identifying the specific fact or event to be removed. Implement
+      soft-delete functionality by marking records as inactive (`is_active =
+      FALSE`) in the database, rather than physically deleting them. Deletion
+      events should also be recorded in the history tables.
+    files: []
+    steps: []
+  - title: Implement Recurring Event Creation and Storage
+    description: Extend LLM-based event extraction to identify recurrence rule
+      descriptions (e.g., "every Tuesday at 4pm"). Develop a system to parse
+      these descriptions into a structured format (e.g., RRule string). Store
+      the main event details in the `events` table (marked as recurring) and the
+      recurrence pattern along with its next calculated occurrence in the
+      `recurring_patterns` table.
+    files: []
+    steps: []
+  - title: Implement Basic Querying for Recurring Events
+    description: Modify the event querying system (`findEvents`) to include the
+      `next_occurrence` of active recurring events when they fall within a
+      user-specified time range. This involves joining `events` with
+      `recurring_patterns` and combining these results with non-recurring
+      events.
+    files: []
+    steps: []
+id: 1hyl1i5-4
+status: pending
+priority: unknown
+dependencies:
+  - 1hyl1i5-3
+rmfilter:
+  - .
+planGeneratedAt: 2025-05-30T03:19:49.289Z
+createdAt: 2025-05-30T03:19:49.289Z
+updatedAt: 2025-05-30T03:19:49.289Z

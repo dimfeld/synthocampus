@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
+title: Daily Summaries, Advanced Features, and Final Polish
+goal: Implement automated daily event summaries, enhance query capabilities for
+  more complex searches, and ensure the bot is robust and production-ready
+  through comprehensive error handling, logging, prompt optimization, and
+  documentation.
+details: This phase focuses on adding proactive features like daily summaries,
+  improving user experience with more sophisticated querying, and hardening the
+  application. It also includes final touches like prompt refinement and
+  ensuring the project is well-documented.
+tasks:
+  - title: Implement Daily Summary Feature
+    description: Create a scheduled job (e.g., using `node-cron`) that runs daily at
+      a configurable time (respecting the configured timezone). This job will
+      fetch all events (non-recurring and the next occurrences of recurring
+      ones) for the current day, format them into a clear summary, and post this
+      summary to a designated Discord channel. After processing, it will update
+      the `next_occurrence` for recurring events that were included in the
+      summary.
+    files: []
+    steps: []
+  - title: Develop Advanced Querying Capabilities
+    description: Enhance the LLM query analysis and database retrieval logic to
+      support more complex queries. This includes person-based queries ("What's
+      up with Sarah?"), category-based fact queries ("What allergies do we
+      know?"), and combined keyword searches across various fields in both facts
+      and events.
+    files: []
+    steps: []
+  - title: Implement Comprehensive Error Handling and Logging
+    description: "Integrate robust error handling throughout the application: for
+      user input validation (clarifying ambiguous dates/info), database
+      operations (using transactions where appropriate), LLM API calls (retries,
+      fallbacks), and Discord connectivity issues. Implement structured logging
+      for key events, errors, and diagnostics to facilitate monitoring and
+      debugging."
+    files: []
+    steps: []
+  - title: Final Review, Documentation, and Polish
+    description: Conduct a thorough review of all features, refine LLM prompts for
+      optimal performance and accuracy, update and finalize project
+      documentation (including README.md and any necessary user guides), and
+      perform final testing to ensure overall quality and stability.
+    files: []
+    steps: []
+id: 1hyl1i5-5
+status: pending
+priority: unknown
+dependencies:
+  - 1hyl1i5-4
+rmfilter:
+  - .
+planGeneratedAt: 2025-05-30T03:19:49.289Z
+createdAt: 2025-05-30T03:19:49.289Z
+updatedAt: 2025-05-30T03:19:49.289Z
