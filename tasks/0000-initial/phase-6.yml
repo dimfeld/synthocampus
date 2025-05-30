@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
+title: Contextual Understanding, Corrections, and Deletions
+goal: Enhance the bot's conversational abilities by enabling it to maintain
+  context, understand implicit references, and process natural language
+  corrections and deletions for both facts and events.
+details: This phase focuses on making interactions more fluid and intuitive. The
+  bot will remember recent parts of the conversation to better understand
+  follow-up statements, and users will be able to modify or remove information
+  using natural language.
+tasks:
+  - title: Conversation History Tracking for LLM Context
+    description: Implement a mechanism to store a short history of the current
+      conversation. This history will be selectively provided to the LLM in
+      subsequent prompts to help it maintain context for follow-up questions or
+      statements.
+    files: []
+    steps: []
+  - title: Implicit Reference Resolution
+    description: Enhance LLM prompts and the bot's logic to understand implicit
+      references to people, events, or facts mentioned earlier in the
+      conversation (e.g., "What about his allergies?" after discussing David, or
+      "Change that appointment to 3pm" after discussing a specific appointment).
+    files: []
+    steps: []
+  - title: Natural Language Corrections for Facts and Events
+    description: Develop functionality allowing users to correct previously stored
+      information using natural language (e.g., "Actually, Sarah's piano lesson
+      is at 4:30pm, not 4pm," or "My anniversary is on the 10th, not the 12th").
+      This involves identifying the target record and the specific field(s) to
+      update.
+    files: []
+    steps: []
+  - title: Partial Information Updates
+    description: Support updates where only a piece of information is changed for an
+      existing event or fact, ensuring that other details of the record are
+      preserved. The LLM will help identify what needs to be updated.
+    files: []
+    steps: []
+  - title: Natural Language Deletions for Facts and Events
+    description: Implement functionality for users to request the deletion of events
+      or facts using natural language (e.g., "Forget about the old wifi
+      password," or "Cancel my meeting with John tomorrow"). This should utilize
+      the soft delete mechanism.
+    files: []
+    steps: []
+  - title: Relating New Information to Existing Data (Update vs. New)
+    description: Improve the LLM's ability to discern whether a new piece of
+      information provided by the user is an update to an existing fact/event or
+      if it's entirely new information that should create a new record. The bot
+      should confirm its interpretation if ambiguous.
+    files: []
+    steps: []
+id: 1j6amh3-6
+status: pending
+dependencies:
+  - 1j6amh3-4
+planGeneratedAt: 2025-05-30T19:03:57.505Z
+createdAt: 2025-05-30T19:03:57.505Z
+updatedAt: 2025-05-30T19:03:57.505Z
+project:
+  goal: To create a natural language Discord bot that serves as a personal
+    information manager, storing and retrieving time-based events and general
+    facts, using an LLM-powered conversational interface.
+  title: Personal Assistant Discord Bot Development Plan
+  details: The project involves building a Discord bot using Bun, SQLite,
+    Discord.js, and the Vercel AI SDK with Gemini Flash 2.5. The bot will manage
+    events (one-time, recurring, all-day) and facts (attributes, relationships,
+    credentials, preferences, contacts). Key features include natural language
+    understanding for input, queries, corrections, and deletions; intelligent
+    processing like automatic information extraction and smart assumptions;
+    comprehensive query capabilities; flexible update mechanisms; and automated
+    features like a daily summary. The initial version will support a single
+    user.

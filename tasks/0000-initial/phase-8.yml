@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
+title: Automated Features, Performance, and Finalization
+goal: Add automated features like the daily summary, optimize system
+  performance, conduct thorough testing, and finalize documentation for the bot.
+details: This final phase focuses on proactive features, ensuring the bot is
+  efficient and robust, and preparing it for reliable use. It includes
+  implementing the daily summary, performance tuning, comprehensive error
+  handling, and final documentation.
+tasks:
+  - title: Daily Summary Implementation
+    description: Create a scheduled task (e.g., using a cron-like mechanism suitable
+      for the Bun environment) that automatically generates a summary of all
+      events for the current day. This summary should be chronologically
+      organized and posted directly to a designated Discord channel at 7:00 AM
+      Hawaii time.
+    files: []
+    steps: []
+  - title: Recurring Event Management Enhancements
+    description: Review and refine the recurring event generation logic,
+      particularly for more complex patterns (e.g., "every other week," "last
+      Friday of the month"). Consider adding holiday awareness for business day
+      calculations if deemed critical and feasible within scope.
+    files: []
+    steps: []
+  - title: Performance Optimization Review
+    description: >
+      Review and implement performance optimizations:
+          *   Verify and add database indexes for common query patterns (person, date ranges, categories, keywords).
+          *   Ensure consistent use of prepared statements for all SQL queries to prevent SQL injection and improve performance.
+          *   Evaluate the need for and potentially implement query result caching for frequently accessed, non-volatile data.
+    files: []
+    steps: []
+  - title: Advanced Error Handling and LLM Fallbacks
+    description: Implement comprehensive error handling for LLM API interactions
+      (including retries, timeouts, and fallback strategies for when the LLM is
+      unavailable or returns unexpected results) and database operations. Ensure
+      user-friendly error messages are provided.
+    files: []
+    steps: []
+  - title: Refine LLM Prompts and Function Calling
+    description: Conduct a thorough review and iteration cycle on all LLM system
+      prompts and function calling definitions. Fine-tune them for improved
+      accuracy, efficiency, token usage, and robustness based on extensive
+      testing of various conversational flows.
+    files: []
+    steps: []
+  - title: Comprehensive End-to-End Testing
+    description: Perform thorough testing of all features, including edge cases,
+      complex conversational flows, data validation, error handling, and the
+      daily summary feature. Test across different types of inputs and queries.
+    files: []
+    steps: []
+  - title: Documentation Finalization
+    description: Update and finalize the `README.md` file and any other relevant
+      documentation. Include complete setup instructions, detailed usage
+      examples for all major features, an overview of the bot's capabilities,
+      and a brief summary of the technical architecture.
+    files: []
+    steps: []
+id: 1j6amh3-8
+status: pending
+dependencies:
+  - 1j6amh3-7
+planGeneratedAt: 2025-05-30T19:03:57.505Z
+createdAt: 2025-05-30T19:03:57.505Z
+updatedAt: 2025-05-30T19:03:57.505Z
+project:
+  goal: To create a natural language Discord bot that serves as a personal
+    information manager, storing and retrieving time-based events and general
+    facts, using an LLM-powered conversational interface.
+  title: Personal Assistant Discord Bot Development Plan
+  details: The project involves building a Discord bot using Bun, SQLite,
+    Discord.js, and the Vercel AI SDK with Gemini Flash 2.5. The bot will manage
+    events (one-time, recurring, all-day) and facts (attributes, relationships,
+    credentials, preferences, contacts). Key features include natural language
+    understanding for input, queries, corrections, and deletions; intelligent
+    processing like automatic information extraction and smart assumptions;
+    comprehensive query capabilities; flexible update mechanisms; and automated
+    features like a daily summary. The initial version will support a single
+    user.

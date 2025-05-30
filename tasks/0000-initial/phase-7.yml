@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
+title: Advanced Queries, Update Management, and Conflict Resolution
+goal: Implement the full suite of advanced query capabilities, robust data
+  update management including full history tracking for rollbacks, and basic
+  conflict resolution.
+details: This phase rounds out the core interaction features by adding more
+  sophisticated ways to query data and manage it over time. It also introduces
+  mechanisms for data integrity like user-initiated rollbacks and handling
+  conflicting information.
+tasks:
+  - title: Person-Centric Queries
+    description: Implement functionality to respond to queries like "Tell me
+      everything about David" or "What's coming up for Mom?". This will involve
+      fetching and combining relevant facts and events for a specific person.
+    files: []
+    steps: []
+  - title: Category-Based Queries
+    description: Enable users to query for facts or events based on categories, such
+      as "List all the passwords," "What medical information do we have for
+      Sarah?", or "Show me all recurring events."
+    files: []
+    steps: []
+  - title: Keyword Searches
+    description: Implement a general keyword search capability that allows users to
+      find facts or events containing specific keywords (e.g., "Anything about
+      the dentist?", "Find everything with 'school'").
+    files: []
+    steps: []
+  - title: Full History Tracking and Snapshots Consolidation
+    description: Ensure that the `fact_history` and `event_history` tables
+      comprehensively capture before/after JSON snapshots for all create,
+      update, and delete operations, providing a complete audit trail.
+    files: []
+    steps: []
+  - title: User-Initiated Rollback Capability
+    description: Implement a mechanism allowing users to roll back specific changes
+      made to facts or events, based on the recorded history (e.g., "Undo the
+      last change to Sarah's allergies"). This will require careful design to
+      identify the correct historical record and revert the data.
+    files: []
+    steps: []
+  - title: Basic Intelligent Conflict Resolution
+    description: Implement logic for the bot to identify potential conflicts when
+      storing or updating information (e.g., scheduling a new event that
+      overlaps with an existing one for the same person). The bot should prompt
+      the user for confirmation or clarification in such cases.
+    files: []
+    steps: []
+  - title: Smart Merging of Partial Information
+    description: Refine how partial updates (from Phase 6) are merged with existing
+      data, potentially using the LLM to help understand the intent and ensure
+      data consistency, especially for complex records.
+    files: []
+    steps: []
+id: 1j6amh3-7
+status: pending
+dependencies:
+  - 1j6amh3-5
+  - 1j6amh3-6
+planGeneratedAt: 2025-05-30T19:03:57.505Z
+createdAt: 2025-05-30T19:03:57.505Z
+updatedAt: 2025-05-30T19:03:57.505Z
+project:
+  goal: To create a natural language Discord bot that serves as a personal
+    information manager, storing and retrieving time-based events and general
+    facts, using an LLM-powered conversational interface.
+  title: Personal Assistant Discord Bot Development Plan
+  details: The project involves building a Discord bot using Bun, SQLite,
+    Discord.js, and the Vercel AI SDK with Gemini Flash 2.5. The bot will manage
+    events (one-time, recurring, all-day) and facts (attributes, relationships,
+    credentials, preferences, contacts). Key features include natural language
+    understanding for input, queries, corrections, and deletions; intelligent
+    processing like automatic information extraction and smart assumptions;
+    comprehensive query capabilities; flexible update mechanisms; and automated
+    features like a daily summary. The initial version will support a single
+    user.

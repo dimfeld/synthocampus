@@ -1,45 +1,58 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
-title: Storing Information (Facts and Simple Events)
-goal: Enable the bot to understand user messages for storing new facts and
-  simple, non-recurring events, including basic date/time parsing and history
-  tracking.
-details: This phase focuses on the bot's ability to receive, interpret, and
-  persist information. It involves implementing LLM-based intent classification
-  to understand user commands, and LLM-based data extraction to pull structured
-  data from natural language for storage.
+title: Basic Manual Event Management
+goal: Extend the manual data management capabilities to include one-time and
+  all-day events, further developing the database schema and command-based
+  interactions.
+details: This phase adds the ability to store and retrieve time-based events
+  using manual commands. This will help solidify the event data model and
+  interaction logic before introducing LLM-based natural language processing.
 tasks:
-  - title: Implement Basic Message Handling and Intent Classification
-    description: Configure the bot to listen to messages in a designated Discord
-      channel. Implement a system using the LLM to classify user input into
-      high-level intents such as `new_fact`, `new_event`, `query`, etc., and
-      have the bot acknowledge or respond based on the classified intent.
+  - title: Database Schema for Events
+    description: Define and implement the SQLite schema for an `events` table. This
+      table will store event details such as ID, associated person's name, event
+      name, event type (e.g., one-time, all-day), start time, end time or
+      duration, a flag for all-day events, a JSON field for notes or flexible
+      metadata, creation/update timestamps, and a soft delete flag.
     files: []
     steps: []
-  - title: Develop Fact Storage Functionality
-    description: Implement LLM-based extraction of structured data (subject, person,
-      category, key, value) for general facts from user messages. Create
-      database functions to store these extracted facts into the `facts` table
-      and record the creation event in the `fact_history` table. The bot should
-      confirm successful storage to the user.
+  - title: Basic Event Storage (Command-based)
+    description: Implement a command (e.g., `!addevent <person> <name> <YYYY-MM-DD
+      HH:MM> [duration_minutes|YYYY-MM-DD HH:MM] [--allday]`) for storing
+      one-time and all-day events. This command will parse basic date/time
+      inputs and event properties.
     files: []
     steps: []
-  - title: Develop Simple Event Storage Functionality
-    description: Implement LLM-based extraction of event details (person, event
-      type, description, date/time string) for non-recurring events. Develop a
-      utility for basic date/time parsing from the extracted string, considering
-      the configured timezone. Create database functions to store these parsed
-      events into the `events` table and record their creation in
-      `event_history`. The bot should confirm scheduling, including any date
-      assumptions.
+  - title: Basic Event Retrieval (Command-based)
+    description: Implement a command (e.g., `!getevents [person] [date_or_range]`)
+      to retrieve and display stored events. Users should be able to filter
+      events by person and/or a specific date or date range.
     files: []
     steps: []
-id: 1hyl1i5-2
+  - title: Initial History Tracking for Events
+    description: Create an `event_history` table, similar to `fact_history`, to log
+      changes to events. For each create, update, or delete operation on an
+      event, store a record including the event ID, type of change, timestamp,
+      and JSON snapshots of the data before and after.
+    files: []
+    steps: []
+id: 1j6amh3-2
 status: pending
-priority: unknown
 dependencies:
-  - 1hyl1i5-1
-rmfilter:
-  - .
-planGeneratedAt: 2025-05-30T03:19:49.289Z
-createdAt: 2025-05-30T03:19:49.289Z
-updatedAt: 2025-05-30T03:19:49.289Z
+  - 1j6amh3-1
+planGeneratedAt: 2025-05-30T19:03:57.505Z
+createdAt: 2025-05-30T19:03:57.505Z
+updatedAt: 2025-05-30T19:03:57.505Z
+project:
+  goal: To create a natural language Discord bot that serves as a personal
+    information manager, storing and retrieving time-based events and general
+    facts, using an LLM-powered conversational interface.
+  title: Personal Assistant Discord Bot Development Plan
+  details: The project involves building a Discord bot using Bun, SQLite,
+    Discord.js, and the Vercel AI SDK with Gemini Flash 2.5. The bot will manage
+    events (one-time, recurring, all-day) and facts (attributes, relationships,
+    credentials, preferences, contacts). Key features include natural language
+    understanding for input, queries, corrections, and deletions; intelligent
+    processing like automatic information extraction and smart assumptions;
+    comprehensive query capabilities; flexible update mechanisms; and automated
+    features like a daily summary. The initial version will support a single
+    user.

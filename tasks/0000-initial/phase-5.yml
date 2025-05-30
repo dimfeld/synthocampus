@@ -1,55 +1,76 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
-title: Daily Summaries, Advanced Features, and Final Polish
-goal: Implement automated daily event summaries, enhance query capabilities for
-  more complex searches, and ensure the bot is robust and production-ready
-  through comprehensive error handling, logging, prompt optimization, and
-  documentation.
-details: This phase focuses on adding proactive features like daily summaries,
-  improving user experience with more sophisticated querying, and hardening the
-  application. It also includes final touches like prompt refinement and
-  ensuring the project is well-documented.
+title: Recurring Event Management
+goal: Implement comprehensive support for defining, storing, generating
+  instances of, and querying recurring events using natural language.
+details: This phase introduces the ability to manage events that repeat on
+  various schedules. It involves extending the database schema, using the LLM to
+  understand recurring patterns from natural language, and developing logic to
+  generate event instances for queries.
 tasks:
-  - title: Implement Daily Summary Feature
-    description: Create a scheduled job (e.g., using `node-cron`) that runs daily at
-      a configurable time (respecting the configured timezone). This job will
-      fetch all events (non-recurring and the next occurrences of recurring
-      ones) for the current day, format them into a clear summary, and post this
-      summary to a designated Discord channel. After processing, it will update
-      the `next_occurrence` for recurring events that were included in the
-      summary.
+  - title: Database Schema for Recurring Events
+    description: Design and implement schema extensions or new tables (e.g.,
+      `recurring_event_rules`) to store the rules for recurring events. This
+      should include parameters like frequency (daily, weekly, monthly, yearly),
+      interval, specific days (of week/month), start date, and optionally an end
+      date or occurrence count.
     files: []
     steps: []
-  - title: Develop Advanced Querying Capabilities
-    description: Enhance the LLM query analysis and database retrieval logic to
-      support more complex queries. This includes person-based queries ("What's
-      up with Sarah?"), category-based fact queries ("What allergies do we
-      know?"), and combined keyword searches across various fields in both facts
-      and events.
+  - title: LLM-Powered Recurring Event Definition
+    description: Develop system prompts and function calling specifications for the
+      LLM to parse natural language definitions of recurring events (e.g.,
+      "Sarah's piano lesson is every Wednesday at 4pm," "Team meeting on the
+      first Monday of each month," "Annual birthday for John on May 5th").
     files: []
     steps: []
-  - title: Implement Comprehensive Error Handling and Logging
-    description: "Integrate robust error handling throughout the application: for
-      user input validation (clarifying ambiguous dates/info), database
-      operations (using transactions where appropriate), LLM API calls (retries,
-      fallbacks), and Discord connectivity issues. Implement structured logging
-      for key events, errors, and diagnostics to facilitate monitoring and
-      debugging."
+  - title: Natural Language Recurring Event Storage
+    description: Implement the logic to take the structured recurring rule data
+      extracted by the LLM and store it in the database.
     files: []
     steps: []
-  - title: Final Review, Documentation, and Polish
-    description: Conduct a thorough review of all features, refine LLM prompts for
-      optimal performance and accuracy, update and finalize project
-      documentation (including README.md and any necessary user guides), and
-      perform final testing to ensure overall quality and stability.
+  - title: Recurring Event Instance Generation Logic
+    description: Develop a system to generate concrete instances of recurring events
+      based on their stored rules. This logic will be used when users query for
+      events within a specific time range. Decide on a strategy for generation
+      (e.g., on-the-fly for a given query range, or pre-generating up to a
+      certain future horizon).
     files: []
     steps: []
-id: 1hyl1i5-5
+  - title: Support for Common Recurring Patterns
+    description: Implement support for common recurrence patterns, including daily,
+      weekly on specific weekdays, monthly on a specific day number or Nth
+      weekday (e.g., "first Monday"), and annually on a specific month/day.
+    files: []
+    steps: []
+  - title: End Date/Count Support for Recurring Series
+    description: Allow users to specify an end date or a total number of occurrences
+      for a recurring event series, and ensure the instance generation logic
+      respects these limits.
+    files: []
+    steps: []
+  - title: Integration of Recurring Events with Temporal Queries
+    description: Modify existing temporal query logic (from Phase 4) to include
+      instances of recurring events in the results, providing a complete view of
+      scheduled activities.
+    files: []
+    steps: []
+id: 1j6amh3-5
 status: pending
-priority: unknown
 dependencies:
-  - 1hyl1i5-4
-rmfilter:
-  - .
-planGeneratedAt: 2025-05-30T03:19:49.289Z
-createdAt: 2025-05-30T03:19:49.289Z
-updatedAt: 2025-05-30T03:19:49.289Z
+  - 1j6amh3-4
+planGeneratedAt: 2025-05-30T19:03:57.505Z
+createdAt: 2025-05-30T19:03:57.505Z
+updatedAt: 2025-05-30T19:03:57.505Z
+project:
+  goal: To create a natural language Discord bot that serves as a personal
+    information manager, storing and retrieving time-based events and general
+    facts, using an LLM-powered conversational interface.
+  title: Personal Assistant Discord Bot Development Plan
+  details: The project involves building a Discord bot using Bun, SQLite,
+    Discord.js, and the Vercel AI SDK with Gemini Flash 2.5. The bot will manage
+    events (one-time, recurring, all-day) and facts (attributes, relationships,
+    credentials, preferences, contacts). Key features include natural language
+    understanding for input, queries, corrections, and deletions; intelligent
+    processing like automatic information extraction and smart assumptions;
+    comprehensive query capabilities; flexible update mechanisms; and automated
+    features like a daily summary. The initial version will support a single
+    user.

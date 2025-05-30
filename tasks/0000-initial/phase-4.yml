@@ -1,54 +1,77 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
-title: Modifying Information and Handling Recurring Events
-goal: Implement capabilities for users to update and delete stored facts and
-  events (using soft deletes), and introduce support for creating, storing, and
-  querying basic recurring events.
-details: This phase adds essential data management features (updates, soft
-  deletes with history) and extends event handling to include recurring
-  patterns. This involves more complex LLM interactions for understanding
-  update/delete intents and recurrence rules.
+title: LLM Integration for Natural Language Event Management (One-Time & All-Day)
+goal: Extend LLM capabilities to manage one-time and all-day events through
+  natural language, including date/time parsing and basic temporal queries.
+details: This phase brings natural language understanding to event management.
+  The LLM will be used to parse event details from conversational input,
+  including complex date and time expressions, and to understand basic queries
+  about upcoming events.
 tasks:
-  - title: Implement Update Operations for Facts and Events
-    description: Develop LLM-based intent analysis to understand user requests to
-      update existing facts or events. This includes identifying the specific
-      record to modify and the new information. Implement database logic to
-      update records in `facts` or `events` tables, ensuring `updated_at`
-      timestamps are set and changes are logged in the respective history
-      tables.
+  - title: LLM-Powered Event Extraction (One-Time & All-Day)
+    description: Develop system prompts and function calling specifications for the
+      LLM to parse natural language descriptions of events (e.g., "Mom has a
+      doctor's appointment next Tuesday at 10 AM for 1 hour") and extract
+      structured event data (person, event name, date, time, duration, all-day
+      status).
     files: []
     steps: []
-  - title: Implement Delete Operations (Soft Deletes) for Facts and Events
-    description: Develop LLM-based intent analysis for deletion requests,
-      identifying the specific fact or event to be removed. Implement
-      soft-delete functionality by marking records as inactive (`is_active =
-      FALSE`) in the database, rather than physically deleting them. Deletion
-      events should also be recorded in the history tables.
+  - title: Natural Language Event Storage (One-Time & All-Day)
+    description: Implement the bot logic to process user messages describing events,
+      use the LLM to extract structured event data, and store this data in the
+      `events` table.
     files: []
     steps: []
-  - title: Implement Recurring Event Creation and Storage
-    description: Extend LLM-based event extraction to identify recurrence rule
-      descriptions (e.g., "every Tuesday at 4pm"). Develop a system to parse
-      these descriptions into a structured format (e.g., RRule string). Store
-      the main event details in the `events` table (marked as recurring) and the
-      recurrence pattern along with its next calculated occurrence in the
-      `recurring_patterns` table.
+  - title: Robust Date/Time Parsing and Timezone Awareness
+    description: Leverage the LLM for parsing various natural language date and time
+      expressions (e.g., "next Tuesday," "tomorrow at 3pm," "July 4th"). Ensure
+      that all date/time information is processed with timezone awareness,
+      defaulting to Hawaii time as specified, and stored consistently.
     files: []
     steps: []
-  - title: Implement Basic Querying for Recurring Events
-    description: Modify the event querying system (`findEvents`) to include the
-      `next_occurrence` of active recurring events when they fall within a
-      user-specified time range. This involves joining `events` with
-      `recurring_patterns` and combining these results with non-recurring
-      events.
+  - title: Event Type Classification (One-Time, All-Day)
+    description: Use the LLM to automatically classify events as one-time or all-day
+      based on the user's natural language input.
     files: []
     steps: []
-id: 1hyl1i5-4
+  - title: LLM-Powered Basic Temporal Query Understanding
+    description: "Develop system prompts and function calling for the LLM to
+      understand basic temporal queries such as \"What's happening this
+      weekend?\", \"Show me everything for tomorrow,\" or \"What do I have on
+      June 15th?\". "
+    files: []
+    steps: []
+  - title: Natural Language Event Retrieval (Basic Temporal)
+    description: Implement the logic to process these LLM-understood temporal
+      queries, retrieve the relevant events from the database, and present them
+      to the user.
+    files: []
+    steps: []
+  - title: Communicate LLM Assumptions (Events)
+    description: Ensure the bot clearly communicates any assumptions made during
+      event processing, especially regarding dates, times, and event types
+      (e.g., "Okay, I've scheduled 'Doctor's appointment' for Mom for next
+      Tuesday, [calculated_date], at 10:00 AM Hawaii Time.").
+    files: []
+    steps: []
+id: 1j6amh3-4
 status: pending
-priority: unknown
 dependencies:
-  - 1hyl1i5-3
-rmfilter:
-  - .
-planGeneratedAt: 2025-05-30T03:19:49.289Z
-createdAt: 2025-05-30T03:19:49.289Z
-updatedAt: 2025-05-30T03:19:49.289Z
+  - 1j6amh3-2
+  - 1j6amh3-3
+planGeneratedAt: 2025-05-30T19:03:57.505Z
+createdAt: 2025-05-30T19:03:57.505Z
+updatedAt: 2025-05-30T19:03:57.505Z
+project:
+  goal: To create a natural language Discord bot that serves as a personal
+    information manager, storing and retrieving time-based events and general
+    facts, using an LLM-powered conversational interface.
+  title: Personal Assistant Discord Bot Development Plan
+  details: The project involves building a Discord bot using Bun, SQLite,
+    Discord.js, and the Vercel AI SDK with Gemini Flash 2.5. The bot will manage
+    events (one-time, recurring, all-day) and facts (attributes, relationships,
+    credentials, preferences, contacts). Key features include natural language
+    understanding for input, queries, corrections, and deletions; intelligent
+    processing like automatic information extraction and smart assumptions;
+    comprehensive query capabilities; flexible update mechanisms; and automated
+    features like a daily summary. The initial version will support a single
+    user.

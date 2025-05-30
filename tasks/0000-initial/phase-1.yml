@@ -1,43 +1,241 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
-title: Core Infrastructure and Basic Connectivity
-goal: Establish the foundational elements of the project, including project
-  setup, basic Discord bot functionality, database integration, and LLM
-  connectivity.
-details: This phase ensures all core systems are in place and communicating,
-  forming the backbone for subsequent feature development. It covers setting up
-  the development environment, connecting to Discord, initializing the database
-  with its schema, and establishing a connection to the LLM service.
-tasks:
-  - title: Initialize Project and Basic Discord Bot
-    description: Set up the Bun/TypeScript project, configure necessary tooling
-      (linters, TypeScript), create a Discord bot application, and establish a
-      basic connection where the bot comes online in a server. This includes
-      implementing a robust system for managing environment variables (e.g., bot
-      token, API keys).
-    files: []
-    steps: []
-  - title: Database Setup and Initial Schema
-    description: Integrate SQLite into the project using a suitable driver for
-      Bun/Node.js. Define the complete database schema as per the project
-      specifications, including tables for `events`, `facts`,
-      `recurring_patterns`, `event_history`, and `fact_history`. Create an
-      idempotent migration script to initialize the database and its tables.
-    files: []
-    steps: []
-  - title: LLM Integration Setup
-    description: Integrate the Vercel AI SDK with Google Gemini (or the specified
-      LLM). Configure API key access securely using environment variables.
-      Create a basic module or service that initializes the LLM client and
-      provides a simple function to test sending a prompt and receiving a
-      response from the LLM.
-    files: []
-    steps: []
-id: 1hyl1i5-1
+title: Foundation - Bot, Database, and Basic Manual Fact Management
+goal: Establish the core bot infrastructure, database setup, and allow manual
+  (non-LLM) storage and retrieval of facts to create a stable foundation.
+details: This phase focuses on getting the bot operational, connecting it to
+  Discord, setting up the SQLite database with the initial schema for facts, and
+  implementing basic command-driven CRUD operations for facts. This allows for
+  early testing of the database layer and bot connectivity.
+id: 1j6amh3-1
 status: pending
-priority: unknown
 dependencies: []
-rmfilter:
-  - .
-planGeneratedAt: 2025-05-30T03:19:49.289Z
-createdAt: 2025-05-30T03:19:49.289Z
-updatedAt: 2025-05-30T03:19:49.289Z
+planGeneratedAt: 2025-05-30T19:03:57.505Z
+createdAt: 2025-05-30T19:03:57.505Z
+updatedAt: 2025-05-30T19:44:44.856Z
+project:
+  title: Personal Assistant Discord Bot Development Plan
+  goal: To create a natural language Discord bot that serves as a personal
+    information manager, storing and retrieving time-based events and general
+    facts, using an LLM-powered conversational interface.
+  details: The project involves building a Discord bot using Bun, SQLite,
+    Discord.js, and the Vercel AI SDK with Gemini Flash 2.5. The bot will manage
+    events (one-time, recurring, all-day) and facts (attributes, relationships,
+    credentials, preferences, contacts). Key features include natural language
+    understanding for input, queries, corrections, and deletions; intelligent
+    processing like automatic information extraction and smart assumptions;
+    comprehensive query capabilities; flexible update mechanisms; and automated
+    features like a daily summary. The initial version will support a single
+    user.
+tasks:
+  - title: Project Initialization and Core Dependencies
+    description: Set up the Bun project environment, install necessary dependencies
+      including Discord.js, the native SQLite driver in Bun, and the Vercel AI
+      SDK. Establish a basic project structure with configurations for
+      development.
+    files:
+      - package.json
+      - src/index.ts
+      - src/config.ts
+    steps:
+      - prompt: >
+          Modify `package.json` to add `discord.js`, `bun:sqlite`, and
+          `@vercel/ai` as dependencies. Ensure `type: module` is set and
+          `@types/bun` is present for development.
+      - prompt: >
+          Create a new file `src/config.ts` to manage environment variables.
+          Define an interface for configuration and export a default object that
+          loads `DISCORD_BOT_TOKEN` and `DATABASE_PATH` from `process.env`,
+          providing default values for development if necessary.
+      - prompt: >
+          Update `src/index.ts` to import the `config` object from
+          `src/config.ts` and log a message indicating the bot is starting with
+          a reference to a config value (e.g., `config.DATABASE_PATH`) to verify
+          basic setup.
+  - title: Discord Bot Connectivity
+    description: Implement the basic Discord bot client using Discord.js. Ensure the
+      bot can connect to Discord, authenticate, and respond to a simple health
+      check command (e.g., `!ping`) in a channel.
+    files:
+      - src/index.ts
+      - src/config.ts
+      - src/discord/client.ts
+      - src/discord/commands/ping.ts
+      - src/discord/index.ts
+      - tests/discord_connectivity.test.ts
+    steps:
+      - prompt: >
+          Add `DISCORD_BOT_TOKEN` to `src/config.ts` as a required environment
+          variable for the bot to authenticate.
+      - prompt: >
+          Create `src/discord/client.ts`. Initialize and export a
+          `Discord.Client` instance with necessary intents (e.g.,
+          `GatewayIntentBits.Guilds`, `GatewayIntentBits.MessageContent`). Add a
+          function to log the bot in using the token from `src/config.ts`.
+      - prompt: >
+          Create `src/discord/commands/ping.ts`. Define a simple command handler
+          for `!ping` that replies with "Pong!". This should be a function that
+          takes a `Message` object and sends a reply.
+      - prompt: >
+          Create `src/discord/index.ts`. This file should be responsible for
+          setting up all Discord-related logic. Import the client from
+          `src/discord/client.ts` and the `ping` command handler. Add an event
+          listener for `Events.MessageCreate` that checks for the `!ping`
+          command prefix and dispatches to the `ping` command handler. Export a
+          function to start the Discord bot.
+      - prompt: >
+          Modify `src/index.ts` to import and call the `startDiscordBot`
+          function from `src/discord/index.ts` to initiate the bot's connection
+          to Discord.
+      - prompt: >
+          Create `tests/discord_connectivity.test.ts`. Write a test that
+          attempts to connect the Discord client (using a mock token if
+          necessary, or a real one for integration testing) and verifies that
+          the client is ready. Add a test that simulates a message containing
+          `!ping` and asserts the bot's reply (this might require mocking
+          Discord.js message sending).
+  - title: SQLite Database Setup for Facts
+    description: Define and implement the initial SQLite database schema for storing
+      facts. This includes a `facts` table with columns for an ID, person's
+      name, category, content, creation/update timestamps, a soft delete flag,
+      and a JSON field for flexible metadata. Create scripts for database
+      initialization or migration.
+    files:
+      - src/db/schema.ts
+      - src/db/index.ts
+      - src/db/migrations/001_create_facts_table.ts
+      - tests/db_setup.test.ts
+    steps:
+      - prompt: >
+          Create `src/db/schema.ts`. Define the SQL schema for the `facts`
+          table, including `id` (INTEGER PRIMARY KEY), `person` (TEXT NOT NULL),
+          `category` (TEXT NOT NULL), `content` (TEXT NOT NULL), `created_at`
+          (TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP), `updated_at` (TEXT NOT NULL
+          DEFAULT CURRENT_TIMESTAMP), `deleted` (INTEGER NOT NULL DEFAULT 0),
+          and `metadata` (TEXT DEFAULT '{}' CHECK(json_valid(metadata))).
+      - prompt: >
+          Create `src/db/migrations/001_create_facts_table.ts`. This file should
+          contain the SQL `CREATE TABLE` statement for the `facts` table as
+          defined in `src/db/schema.ts`. Export a function that takes a
+          `Database` instance and executes this SQL.
+      - prompt: >
+          Create `src/db/index.ts`. This file should handle the SQLite database
+          connection. Export a function `getDb()` that returns a `Bun.Database`
+          instance. Implement a simple migration runner within `getDb()` that
+          checks if the `facts` table exists and, if not, runs the
+          `001_create_facts_table` migration. Ensure the database path is loaded
+          from `src/config.ts`.
+      - prompt: >
+          Modify `src/index.ts` to import and call `getDb()` from
+          `src/db/index.ts` during bot startup to ensure the database is
+          initialized.
+      - prompt: >
+          Create `tests/db_setup.test.ts`. Write a test that initializes a
+          temporary in-memory SQLite database using `getDb()`, then verifies
+          that the `facts` table exists and has the correct columns by querying
+          `sqlite_master`.
+  - title: Basic Fact Storage (Command-based)
+    description: Implement a command (e.g., `!addfact <person> <category>
+      <content>`) that allows direct insertion of facts into the database. This
+      command is primarily for development and debugging purposes.
+    files:
+      - src/db/fact_repository.ts
+      - src/discord/commands/addfact.ts
+      - src/discord/index.ts
+      - tests/fact_crud.test.ts
+    steps:
+      - prompt: >
+          Create `src/db/fact_repository.ts`. Implement a function
+          `insertFact(person: string, category: string, content: string)` that
+          takes these parameters and inserts a new row into the `facts` table.
+          Use prepared statements for safe insertion.
+      - prompt: >
+          Create `src/discord/commands/addfact.ts`. Implement a command handler
+          for `!addfact`. This handler should parse the message content to
+          extract `<person>`, `<category>`, and `<content>`. Validate the input
+          and then call `fact_repository.insertFact()`. Respond to the user with
+          a confirmation message or an error.
+      - prompt: >
+          Modify `src/discord/index.ts` to register the `!addfact` command
+          handler, similar to how `!ping` was registered, ensuring it's
+          dispatched when the command is received.
+      - prompt: >
+          Modify `tests/fact_crud.test.ts`. Add a test case that simulates a
+          `!addfact` message. After the command is processed, query the database
+          directly using `fact_repository` to verify that the fact was correctly
+          inserted into the `facts` table.
+  - title: Basic Fact Retrieval (Command-based)
+    description: Implement a command (e.g., `!getfacts <person> [category]`) to
+      retrieve and display facts from the database based on the person's name
+      and optionally a category. This serves as an early test of data retrieval.
+    files:
+      - src/db/fact_repository.ts
+      - src/discord/commands/getfacts.ts
+      - src/discord/index.ts
+      - tests/fact_crud.test.ts
+    steps:
+      - prompt: >
+          In `src/db/fact_repository.ts`, implement a function `getFacts(person:
+          string, category?: string)` that queries the `facts` table. It should
+          filter by `person` and optionally by `category`, and only retrieve
+          facts where `deleted` is 0. Return an array of fact objects.
+      - prompt: >
+          Create `src/discord/commands/getfacts.ts`. Implement a command handler
+          for `!getfacts`. Parse the message content to extract `<person>` and
+          an optional `<category>`. Call `fact_repository.getFacts()` and format
+          the retrieved facts into a readable string to send back to the Discord
+          channel. Handle cases where no facts are found.
+      - prompt: >
+          Modify `src/discord/index.ts` to register the `!getfacts` command
+          handler.
+      - prompt: >
+          Modify `tests/fact_crud.test.ts`. Add a test case that first inserts a
+          few facts using `fact_repository.insertFact()`. Then, simulate a
+          `!getfacts` message and assert that the bot's reply contains the
+          expected facts retrieved from the database. Test both with and without
+          a category.
+  - title: Initial History Tracking for Facts
+    description: Create a `fact_history` table to log changes to facts. For each
+      create, update, or delete operation on a fact, store a record including
+      the fact ID, type of change, timestamp, and a JSON snapshot of the data
+      before and after the change.
+    files:
+      - src/db/schema.ts
+      - src/db/migrations/002_create_fact_history_table.ts
+      - src/db/fact_repository.ts
+      - src/db/index.ts
+      - tests/fact_crud.test.ts
+    steps:
+      - prompt: >
+          In `src/db/schema.ts`, define the SQL schema for a new `fact_history`
+          table. It should include `id` (INTEGER PRIMARY KEY), `fact_id`
+          (INTEGER NOT NULL, FOREIGN KEY to `facts.id`), `change_type` (TEXT NOT
+          NULL, e.g., 'CREATE', 'UPDATE', 'DELETE'), `timestamp` (TEXT NOT NULL
+          DEFAULT CURRENT_TIMESTAMP), `old_data` (TEXT DEFAULT '{}'
+          CHECK(json_valid(old_data))), and `new_data` (TEXT DEFAULT '{}'
+          CHECK(json_valid(new_data))).
+      - prompt: >
+          Create `src/db/migrations/002_create_fact_history_table.ts`. This file
+          should contain the SQL `CREATE TABLE` statement for the `fact_history`
+          table. Export a function that takes a `Database` instance and executes
+          this SQL.
+      - prompt: >
+          Modify `src/db/index.ts` to update the migration runner. It should now
+          check for and apply `002_create_fact_history_table` after
+          `001_create_facts_table` has been applied, ensuring the history table
+          is created.
+      - prompt: >
+          In `src/db/fact_repository.ts`, create a new private helper function
+          `_logFactHistory(factId: number, changeType: 'CREATE' | 'UPDATE' |
+          'DELETE', oldData: object, newData: object)`. This function should
+          insert a record into the `fact_history` table.
+      - prompt: >
+          Modify `fact_repository.ts`'s `insertFact` function to call
+          `_logFactHistory` with `change_type: 'CREATE'` and `old_data: {}`
+          after a successful insertion, passing the newly created fact's data as
+          `new_data`.
+      - prompt: >
+          Modify `tests/fact_crud.test.ts`. After testing `!addfact` (which
+          calls `insertFact`), add an assertion to query the `fact_history`
+          table and verify that a 'CREATE' entry exists for the newly added
+          fact, with correct `fact_id` and `new_data`.
+promptsGeneratedAt: 2025-05-30T19:44:44.856Z

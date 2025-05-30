@@ -1,16 +1,3 @@
-Okay, here's a detailed, step-by-step blueprint for building the Personal Assistant Discord Bot.
-
-## Guiding Principles for Each Step:
-
-*   **Small & Iterative:** Each step should be a manageable piece of work.
-*   **Testable:** Each step should result in functionality that can be tested (unit, integration, or manually).
-*   **Builds Upon Previous:** Steps should logically follow and build upon completed work.
-*   **Clear Goal:** Each step has a defined objective.
-*   **Key Implementation Details:** High-level guidance on how to achieve the goal.
-*   **Testing Focus:** What specific aspects to test after completing the step.
-
----
-
 ## Phase 1: Core Infrastructure
 
 This phase focuses on setting up the project, basic bot connectivity, and database initialization.

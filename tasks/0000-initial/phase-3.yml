@@ -1,43 +1,83 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dimfeld/llmutils/main/schema/rmplan-plan-schema.json
-title: Retrieving Information (Basic Queries and Enhanced Date Handling)
-goal: Enable users to query stored facts and events using natural language, and
-  enhance the system's date/time parsing capabilities for accuracy and clarity.
-details: This phase focuses on making stored information accessible to the user
-  through natural language queries. It involves using the LLM to analyze query
-  intent and parameters, fetching data from the database, and formatting it for
-  presentation. Date/time handling will be made more robust.
+title: LLM Integration for Natural Language Fact Management
+goal: Introduce LLM-powered natural language understanding for storing and
+  retrieving facts, replacing the command-based system with a conversational
+  interface for facts.
+details: This phase integrates the Vercel AI SDK and Gemini LLM to parse natural
+  language for fact storage and queries. It involves prompt engineering,
+  function calling, and handling LLM responses to interact with the fact
+  database.
 tasks:
-  - title: Implement Fact Querying System
-    description: Develop functionality for the LLM to analyze fact-based user
-      queries, extracting search parameters (e.g., person, category, keywords).
-      Implement database functions to retrieve matching active facts based on
-      these parameters. The bot will then format and present the results clearly
-      to the user.
+  - title: Vercel AI SDK and LLM Setup
+    description: Integrate the Vercel AI SDK into the project. Configure it to use
+      Gemini Flash 2.5 as the LLM provider. Implement basic functions to send
+      requests to the LLM and receive responses.
     files: []
     steps: []
-  - title: Implement Basic Event Querying System (Time-based)
-    description: Develop functionality for the LLM to analyze event-based user
-      queries, with an initial focus on extracting timeframes (e.g., "today",
-      "this weekend"). Implement database functions to retrieve active,
-      non-recurring events within the specified time range. Results should be
-      sorted chronologically and presented clearly.
+  - title: LLM-Powered Fact Extraction for Storage
+    description: Develop system prompts and define function calling specifications
+      for the LLM to parse natural language statements (e.g., "Sarah's favorite
+      color is blue") and extract structured data for facts (person, category,
+      content).
     files: []
     steps: []
-  - title: Enhance Date/Time Parsing and Assumption Handling
-    description: Improve the date/time parsing utility (created in Phase 2) to
-      robustly handle ambiguous inputs (e.g., "next Saturday") and relative
-      dates, consistently using the configured timezone. The system should
-      clearly communicate any assumptions made (e.g., "assuming next Saturday,
-      [date]") during event creation or query processing.
+  - title: Natural Language Fact Storage Implementation
+    description: Modify the bot's message handling logic to send relevant user
+      messages to the LLM. Process the LLM's structured output (from function
+      calls) to store the extracted fact data into the SQLite database.
     files: []
     steps: []
-id: 1hyl1i5-3
+  - title: LLM-Powered Fact Query Understanding
+    description: Develop system prompts and function calling specifications for the
+      LLM to interpret natural language questions about facts (e.g., "What is
+      David's shoe size?") and identify the necessary parameters for a database
+      query.
+    files: []
+    steps: []
+  - title: Natural Language Fact Retrieval Implementation
+    description: Implement the logic for the bot to take a user's natural language
+      query, use the LLM to understand the query's intent and parameters,
+      construct and execute a database query, and then present the retrieved
+      facts to the user in a readable format.
+    files: []
+    steps: []
+  - title: Person Identification from Context (Facts)
+    description: Enhance LLM prompts and interaction logic to identify the person
+      associated with a fact from the ongoing conversation context, reducing the
+      need for explicit mentions in every statement.
+    files: []
+    steps: []
+  - title: Category Auto-Assignment for Facts
+    description: Utilize the LLM's capabilities to suggest or automatically assign a
+      relevant category to new facts based on their content, simplifying the
+      storage process for the user.
+    files: []
+    steps: []
+  - title: Communicate LLM Assumptions (Facts)
+    description: Implement bot responses that clearly communicate any assumptions
+      made by the LLM during fact processing (e.g., "Okay, I've stored that
+      'blue' is Sarah's favorite color under the 'preferences' category for
+      you.").
+    files: []
+    steps: []
+id: 1j6amh3-3
 status: pending
-priority: unknown
 dependencies:
-  - 1hyl1i5-2
-rmfilter:
-  - .
-planGeneratedAt: 2025-05-30T03:19:49.289Z
-createdAt: 2025-05-30T03:19:49.289Z
-updatedAt: 2025-05-30T03:19:49.289Z
+  - 1j6amh3-1
+planGeneratedAt: 2025-05-30T19:03:57.505Z
+createdAt: 2025-05-30T19:03:57.505Z
+updatedAt: 2025-05-30T19:03:57.505Z
+project:
+  goal: To create a natural language Discord bot that serves as a personal
+    information manager, storing and retrieving time-based events and general
+    facts, using an LLM-powered conversational interface.
+  title: Personal Assistant Discord Bot Development Plan
+  details: The project involves building a Discord bot using Bun, SQLite,
+    Discord.js, and the Vercel AI SDK with Gemini Flash 2.5. The bot will manage
+    events (one-time, recurring, all-day) and facts (attributes, relationships,
+    credentials, preferences, contacts). Key features include natural language
+    understanding for input, queries, corrections, and deletions; intelligent
+    processing like automatic information extraction and smart assumptions;
+    comprehensive query capabilities; flexible update mechanisms; and automated
+    features like a daily summary. The initial version will support a single
+    user.
