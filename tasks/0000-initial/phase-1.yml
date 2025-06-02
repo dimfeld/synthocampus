@@ -12,7 +12,7 @@ dependencies: []
 planGeneratedAt: 2025-05-30T19:03:57.505Z
 promptsGeneratedAt: 2025-05-30T19:44:44.856Z
 createdAt: 2025-05-30T19:03:57.505Z
-updatedAt: 2025-06-02T07:34:05.996Z
+updatedAt: 2025-06-02T07:36:06.914Z
 project:
   title: Personal Assistant Discord Bot Development Plan
   goal: To create a natural language Discord bot that serves as a personal
@@ -163,25 +163,25 @@ tasks:
           `insertFact(person: string, category: string, content: string)` that
           takes these parameters and inserts a new row into the `facts` table.
           Use prepared statements for safe insertion.
-        done: false
+        done: true
       - prompt: >
           Create `src/discord/commands/addfact.ts`. Implement a command handler
           for `!addfact`. This handler should parse the message content to
           extract `<person>`, `<category>`, and `<content>`. Validate the input
           and then call `fact_repository.insertFact()`. Respond to the user with
           a confirmation message or an error.
-        done: false
+        done: true
       - prompt: >
           Modify `src/discord/index.ts` to register the `!addfact` command
           handler, similar to how `!ping` was registered, ensuring it's
           dispatched when the command is received.
-        done: false
+        done: true
       - prompt: >
           Modify `tests/fact_crud.test.ts`. Add a test case that simulates a
           `!addfact` message. After the command is processed, query the database
           directly using `fact_repository` to verify that the fact was correctly
           inserted into the `facts` table.
-        done: false
+        done: true
   - title: Basic Fact Retrieval (Command-based)
     description: Implement a command (e.g., `!getfacts <person> [category]`) to
       retrieve and display facts from the database based on the person's name
@@ -271,12 +271,15 @@ changedFiles:
   - .rmfilter/config/rmplan.yml
   - package.json
   - src/config.ts
+  - src/db/fact_repository.ts
   - src/db/index.ts
   - src/db/migrations/001_create_facts_table.ts
   - src/db/schema.ts
   - src/discord/client.ts
+  - src/discord/commands/addfact.ts
   - src/discord/commands/ping.ts
   - src/discord/index.ts
   - src/index.ts
   - tests/db_setup.test.ts
   - tests/discord_connectivity.test.ts
+  - tests/fact_crud.test.ts
