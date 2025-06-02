@@ -12,7 +12,7 @@ dependencies: []
 planGeneratedAt: 2025-05-30T19:03:57.505Z
 promptsGeneratedAt: 2025-05-30T19:44:44.856Z
 createdAt: 2025-05-30T19:03:57.505Z
-updatedAt: 2025-06-02T07:31:19.405Z
+updatedAt: 2025-06-02T07:34:05.996Z
 project:
   title: Personal Assistant Discord Bot Development Plan
   goal: To create a natural language Discord bot that serves as a personal
@@ -122,13 +122,13 @@ tasks:
           (TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP), `updated_at` (TEXT NOT NULL
           DEFAULT CURRENT_TIMESTAMP), `deleted` (INTEGER NOT NULL DEFAULT 0),
           and `metadata` (TEXT DEFAULT '{}' CHECK(json_valid(metadata))).
-        done: false
+        done: true
       - prompt: >
           Create `src/db/migrations/001_create_facts_table.ts`. This file should
           contain the SQL `CREATE TABLE` statement for the `facts` table as
           defined in `src/db/schema.ts`. Export a function that takes a
           `Database` instance and executes this SQL.
-        done: false
+        done: true
       - prompt: >
           Create `src/db/index.ts`. This file should handle the SQLite database
           connection. Export a function `getDb()` that returns a `Bun.Database`
@@ -136,18 +136,18 @@ tasks:
           checks if the `facts` table exists and, if not, runs the
           `001_create_facts_table` migration. Ensure the database path is loaded
           from `src/config.ts`.
-        done: false
+        done: true
       - prompt: >
           Modify `src/index.ts` to import and call `getDb()` from
           `src/db/index.ts` during bot startup to ensure the database is
           initialized.
-        done: false
+        done: true
       - prompt: >
           Create `tests/db_setup.test.ts`. Write a test that initializes a
           temporary in-memory SQLite database using `getDb()`, then verifies
           that the `facts` table exists and has the correct columns by querying
           `sqlite_master`.
-        done: false
+        done: true
   - title: Basic Fact Storage (Command-based)
     description: Implement a command (e.g., `!addfact <person> <category>
       <content>`) that allows direct insertion of facts into the database. This
@@ -271,8 +271,12 @@ changedFiles:
   - .rmfilter/config/rmplan.yml
   - package.json
   - src/config.ts
+  - src/db/index.ts
+  - src/db/migrations/001_create_facts_table.ts
+  - src/db/schema.ts
   - src/discord/client.ts
   - src/discord/commands/ping.ts
   - src/discord/index.ts
   - src/index.ts
+  - tests/db_setup.test.ts
   - tests/discord_connectivity.test.ts
