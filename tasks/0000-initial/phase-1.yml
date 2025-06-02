@@ -12,7 +12,7 @@ dependencies: []
 planGeneratedAt: 2025-05-30T19:03:57.505Z
 promptsGeneratedAt: 2025-05-30T19:44:44.856Z
 createdAt: 2025-05-30T19:03:57.505Z
-updatedAt: 2025-06-02T07:36:06.914Z
+updatedAt: 2025-06-02T07:37:59.744Z
 project:
   title: Personal Assistant Discord Bot Development Plan
   goal: To create a natural language Discord bot that serves as a personal
@@ -197,25 +197,25 @@ tasks:
           string, category?: string)` that queries the `facts` table. It should
           filter by `person` and optionally by `category`, and only retrieve
           facts where `deleted` is 0. Return an array of fact objects.
-        done: false
+        done: true
       - prompt: >
           Create `src/discord/commands/getfacts.ts`. Implement a command handler
           for `!getfacts`. Parse the message content to extract `<person>` and
           an optional `<category>`. Call `fact_repository.getFacts()` and format
           the retrieved facts into a readable string to send back to the Discord
           channel. Handle cases where no facts are found.
-        done: false
+        done: true
       - prompt: >
           Modify `src/discord/index.ts` to register the `!getfacts` command
           handler.
-        done: false
+        done: true
       - prompt: >
           Modify `tests/fact_crud.test.ts`. Add a test case that first inserts a
           few facts using `fact_repository.insertFact()`. Then, simulate a
           `!getfacts` message and assert that the bot's reply contains the
           expected facts retrieved from the database. Test both with and without
           a category.
-        done: false
+        done: true
   - title: Initial History Tracking for Facts
     description: Create a `fact_history` table to log changes to facts. For each
       create, update, or delete operation on a fact, store a record including
@@ -277,6 +277,7 @@ changedFiles:
   - src/db/schema.ts
   - src/discord/client.ts
   - src/discord/commands/addfact.ts
+  - src/discord/commands/getfacts.ts
   - src/discord/commands/ping.ts
   - src/discord/index.ts
   - src/index.ts

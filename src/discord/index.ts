@@ -2,6 +2,7 @@ import { Events } from 'discord.js';
 import { client, loginBot } from './client.js';
 import { handlePingCommand } from './commands/ping.js';
 import { handleAddFactCommand } from './commands/addfact.js';
+import { handleGetFactsCommand } from './commands/getfacts.js';
 
 client.on(Events.MessageCreate, async (message) => {
   if (message.author.bot) return;
@@ -10,6 +11,8 @@ client.on(Events.MessageCreate, async (message) => {
     await handlePingCommand(message);
   } else if (message.content.startsWith('!addfact')) {
     await handleAddFactCommand(message);
+  } else if (message.content.startsWith('!getfacts')) {
+    await handleGetFactsCommand(message);
   }
 });
 

@@ -9,3 +9,23 @@ export function insertFact(person: string, category: string, content: string): v
   
   stmt.run(person, category, content);
 }
+
+export function getFacts(person: string, category?: string): Array<{id: number, person: string, category: string, content: string, created_at: string}> {
+  const db = getDb();
+  
+  if (category) {
+    const stmt = db.prepare(`
+      SELECT id, person, category, content, created_at 
+      FROM facts 
+      WHERE person = ? AND category = ? AND deleted = 0
+    `);
+    return stmt.all(person, category);
+  } else {
+    const stmt = db.prepare(`
+      SELECT id, person, category, content, created_at 
+      FROM facts 
+      WHERE person = ? AND deleted = 0
+    `);
+    return stmt.all(person);
+  }
+}

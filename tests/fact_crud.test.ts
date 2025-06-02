@@ -1,6 +1,8 @@
 import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import { Message } from 'discord.js';
 import { handleAddFactCommand } from '../src/discord/commands/addfact';
+import { handleGetFactsCommand } from '../src/discord/commands/getfacts';
+import { insertFact } from '../src/db/fact_repository';
 import { getDb, closeDb } from '../src/db';
 import { unlinkSync, existsSync } from 'fs';
 import config from '../src/config';
@@ -54,5 +56,72 @@ describe('Fact CRUD Operations', () => {
     } as Message;
 
     await handleAddFactCommand(mockMessage);
+  });
+
+  test('!getfacts command should retrieve facts from database', async () => {
+    // Insert test facts
+    const db = getDb();
+    insertFact('Alice', 'skills', 'knows Python');
+    insertFact('Alice', 'hobbies', 'plays guitar');
+    insertFact('Bob', 'skills', 'expert in JavaScript');
+
+    // Test retrieving all facts for a person
+    const mockMessage = {
+      content: '!getfacts Alice',
+      author: { bot: false },
+      reply: async (content: string) => {
+        expect(content).toContain('Facts for **Alice**:');
+        expect(content).toContain('**skills**: knows Python');
+        expect(content).toContain('**hobbies**: plays guitar');
+      }
+    } as Message;
+
+    await handleGetFactsCommand(mockMessage);
+  });
+
+  test('!getfacts command with category should filter results', async () => {
+    // Insert test facts
+    const db = getDb();
+    insertFact('Carol', 'skills', 'database design');
+    insertFact('Carol', 'skills', 'API development');
+    insertFact('Carol', 'hobbies', 'hiking');
+
+    // Test retrieving facts with category filter
+    const mockMessage = {
+      content: '!getfacts Carol skills',
+      author: { bot: false },
+      reply: async (content: string) => {
+        expect(content).toContain('Facts for **Carol** in category **skills**:');
+        expect(content).toContain('**skills**: database design');
+        expect(content).toContain('**skills**: API development');
+        expect(content).not.toContain('hiking');
+      }
+    } as Message;
+
+    await handleGetFactsCommand(mockMessage);
+  });
+
+  test('!getfacts command should handle no facts found', async () => {
+    const mockMessage = {
+      content: '!getfacts NonexistentPerson',
+      author: { bot: false },
+      reply: async (content: string) => {
+        expect(content).toBe('No facts found for person: NonexistentPerson');
+      }
+    } as Message;
+
+    await handleGetFactsCommand(mockMessage);
+  });
+
+  test('!getfacts command with invalid format should return error', async () => {
+    const mockMessage = {
+      content: '!getfacts',
+      author: { bot: false },
+      reply: async (content: string) => {
+        expect(content).toBe('Invalid format. Use: !getfacts <person> [category]');
+      }
+    } as Message;
+
+    await handleGetFactsCommand(mockMessage);
   });
 });
