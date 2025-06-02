@@ -12,7 +12,7 @@ dependencies: []
 planGeneratedAt: 2025-05-30T19:03:57.505Z
 promptsGeneratedAt: 2025-05-30T19:44:44.856Z
 createdAt: 2025-05-30T19:03:57.505Z
-updatedAt: 2025-06-02T07:27:10.336Z
+updatedAt: 2025-06-02T07:31:19.405Z
 project:
   title: Personal Assistant Discord Bot Development Plan
   goal: To create a natural language Discord bot that serves as a personal
@@ -70,18 +70,18 @@ tasks:
       - prompt: >
           Add `DISCORD_BOT_TOKEN` to `src/config.ts` as a required environment
           variable for the bot to authenticate.
-        done: false
+        done: true
       - prompt: >
           Create `src/discord/client.ts`. Initialize and export a
           `Discord.Client` instance with necessary intents (e.g.,
           `GatewayIntentBits.Guilds`, `GatewayIntentBits.MessageContent`). Add a
           function to log the bot in using the token from `src/config.ts`.
-        done: false
+        done: true
       - prompt: >
           Create `src/discord/commands/ping.ts`. Define a simple command handler
           for `!ping` that replies with "Pong!". This should be a function that
           takes a `Message` object and sends a reply.
-        done: false
+        done: true
       - prompt: >
           Create `src/discord/index.ts`. This file should be responsible for
           setting up all Discord-related logic. Import the client from
@@ -89,12 +89,12 @@ tasks:
           listener for `Events.MessageCreate` that checks for the `!ping`
           command prefix and dispatches to the `ping` command handler. Export a
           function to start the Discord bot.
-        done: false
+        done: true
       - prompt: >
           Modify `src/index.ts` to import and call the `startDiscordBot`
           function from `src/discord/index.ts` to initiate the bot's connection
           to Discord.
-        done: false
+        done: true
       - prompt: >
           Create `tests/discord_connectivity.test.ts`. Write a test that
           attempts to connect the Discord client (using a mock token if
@@ -102,7 +102,7 @@ tasks:
           the client is ready. Add a test that simulates a message containing
           `!ping` and asserts the bot's reply (this might require mocking
           Discord.js message sending).
-        done: false
+        done: true
   - title: SQLite Database Setup for Facts
     description: Define and implement the initial SQLite database schema for storing
       facts. This includes a `facts` table with columns for an ID, person's
@@ -271,4 +271,8 @@ changedFiles:
   - .rmfilter/config/rmplan.yml
   - package.json
   - src/config.ts
+  - src/discord/client.ts
+  - src/discord/commands/ping.ts
+  - src/discord/index.ts
   - src/index.ts
+  - tests/discord_connectivity.test.ts
