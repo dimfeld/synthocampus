@@ -44,6 +44,23 @@ describe('Fact CRUD Operations', () => {
     expect(fact.person).toBe('John');
     expect(fact.category).toBe('Developer');
     expect(fact.content).toBe('likes TypeScript');
+    
+    // Verify fact_history entry was created
+    const historyEntry = db.query('SELECT * FROM fact_history WHERE fact_id = ? AND change_type = ?')
+      .get(fact.id, 'CREATE');
+    
+    expect(historyEntry).toBeDefined();
+    expect(historyEntry.fact_id).toBe(fact.id);
+    expect(historyEntry.change_type).toBe('CREATE');
+    
+    const oldData = JSON.parse(historyEntry.old_data);
+    const newData = JSON.parse(historyEntry.new_data);
+    
+    expect(oldData).toEqual({});
+    expect(newData.person).toBe('John');
+    expect(newData.category).toBe('Developer');
+    expect(newData.content).toBe('likes TypeScript');
+    expect(newData.id).toBe(fact.id);
   });
 
   test('!addfact command with invalid format should return error', async () => {

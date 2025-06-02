@@ -7,12 +7,12 @@ details: This phase focuses on getting the bot operational, connecting it to
   implementing basic command-driven CRUD operations for facts. This allows for
   early testing of the database layer and bot connectivity.
 id: 1j6amh3-1
-status: in_progress
+status: done
 dependencies: []
 planGeneratedAt: 2025-05-30T19:03:57.505Z
 promptsGeneratedAt: 2025-05-30T19:44:44.856Z
 createdAt: 2025-05-30T19:03:57.505Z
-updatedAt: 2025-06-02T07:37:59.744Z
+updatedAt: 2025-06-02T07:41:09.657Z
 project:
   title: Personal Assistant Discord Bot Development Plan
   goal: To create a natural language Discord bot that serves as a personal
@@ -236,44 +236,46 @@ tasks:
           DEFAULT CURRENT_TIMESTAMP), `old_data` (TEXT DEFAULT '{}'
           CHECK(json_valid(old_data))), and `new_data` (TEXT DEFAULT '{}'
           CHECK(json_valid(new_data))).
-        done: false
+        done: true
       - prompt: >
           Create `src/db/migrations/002_create_fact_history_table.ts`. This file
           should contain the SQL `CREATE TABLE` statement for the `fact_history`
           table. Export a function that takes a `Database` instance and executes
           this SQL.
-        done: false
+        done: true
       - prompt: >
           Modify `src/db/index.ts` to update the migration runner. It should now
           check for and apply `002_create_fact_history_table` after
           `001_create_facts_table` has been applied, ensuring the history table
           is created.
-        done: false
+        done: true
       - prompt: >
           In `src/db/fact_repository.ts`, create a new private helper function
           `_logFactHistory(factId: number, changeType: 'CREATE' | 'UPDATE' |
           'DELETE', oldData: object, newData: object)`. This function should
           insert a record into the `fact_history` table.
-        done: false
+        done: true
       - prompt: >
           Modify `fact_repository.ts`'s `insertFact` function to call
           `_logFactHistory` with `change_type: 'CREATE'` and `old_data: {}`
           after a successful insertion, passing the newly created fact's data as
           `new_data`.
-        done: false
+        done: true
       - prompt: >
           Modify `tests/fact_crud.test.ts`. After testing `!addfact` (which
           calls `insertFact`), add an assertion to query the `fact_history`
           table and verify that a 'CREATE' entry exists for the newly added
           fact, with correct `fact_id` and `new_data`.
-        done: false
+        done: true
 changedFiles:
   - .rmfilter/config/rmplan.yml
+  - data/assistant.db
   - package.json
   - src/config.ts
   - src/db/fact_repository.ts
   - src/db/index.ts
   - src/db/migrations/001_create_facts_table.ts
+  - src/db/migrations/002_create_fact_history_table.ts
   - src/db/schema.ts
   - src/discord/client.ts
   - src/discord/commands/addfact.ts
@@ -284,3 +286,4 @@ changedFiles:
   - tests/db_setup.test.ts
   - tests/discord_connectivity.test.ts
   - tests/fact_crud.test.ts
+  - verify_schema.ts
