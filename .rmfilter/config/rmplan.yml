@@ -3,7 +3,7 @@
 paths:
   tasks: tasks
 models:
-  planning: google/gemini-2.5-flash-preview-05-20
+  stepGeneration: google/gemini-2.5-flash-preview-05-20
 defaultExecutor: claude-code
 postApplyCommands:
   # - title: Cleanup Extranous Comments
